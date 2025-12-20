@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="hu">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
 body {
   margin: 0;
@@ -11,13 +13,14 @@ body {
   background-position: center;
 }
 
+/* ===== MENÜ – GÉP NÉZET (ALAP) ===== */
 .topnav {
   overflow: hidden;
   background-color: #333;
+  display: flex;
 }
 
 .topnav a {
-  float: left;
   color: #f2f2f2;
   text-align: center;
   padding: 14px 16px;
@@ -36,120 +39,97 @@ body {
   color: white;
 }
 
+/* ===== TARTALOM ===== */
 .content {
   display: none;
   padding: 16px;
   color: white;
 }
 
-/* Display the active content */
 .content.active {
   display: block;
 }
+
+/* ===== YOUTUBE – RESZPONZÍV ===== */
+.video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
+  max-width: 900px;
+}
+
+.video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ===== MOBIL NÉZET ===== */
+@media (max-width: 768px) {
+
+  .topnav {
+    flex-direction: column;
+  }
+
+  .topnav a {
+    font-size: 18px;
+    padding: 16px;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+
+  .video-wrapper {
+    max-width: 100%;
+  }
+}
 </style>
-<meta charset="UTF-8">
-
-
 </head>
+
 <body>
 
 <div class="topnav">
   <a onclick="showContent('home')" class="active" id="homeLink">Főoldal</a>
-  <a onclick="showContent('informacio')"  class="active" id="informacioLink">Információ</a>
-  <a onclick="showContent('vibercsoportok')"  class="active" id="vibercsoportokLink">Viber csoportok</a>
+  <a onclick="showContent('informacio')" id="informacioLink">Információ</a>
+  <a onclick="showContent('vibercsoportok')" id="vibercsoportokLink">Viber csoportok</a>
 </div>
-
-
-
-
 
 <div id="home" class="content active">
   <h2>Üdvözli a Caca Kft.</h2>
 
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/IHv1Mp13ERI" title="Hi! Caca" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
- <!--
-  <div id="">
-    <div data-video="DMQ-YCMEKkM" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-    <div data-video="WCjzNfJLHa0" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-    <div data-video="HgzGwKwLmgM" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-    <div data-video="Zi_XLOBDo_Y" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-    <div data-video="x9sKhiWzLqk" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-    <div data-video="JyltVWBF6rY" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-    <div data-video="VXzns6kw78Q" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-    <div data-video="BWf-eARnf6U" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-    <div data-video="5sgcMKQ-YFY" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-    <div data-video="CA-GmCx998E" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-    <div data-video="2-ptLktOjrY" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-    <div data-video="BUsd0UPMl6c" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-    <div data-video="fdt6Zq9oPiY" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-	<div data-video="Mp9RxSjDlvE" data-autoplay="0" data-loop="1" class="youtube-audio"></div>  
-	<div data-video="008Oso91GuA" data-autoplay="0" data-loop="1" class="youtube-audio"></div>  
-	<div data-video="Qskm9MTz2V4" data-autoplay="0" data-loop="1" class="youtube-audio"></div>  
-	<div data-video="Suit0t_xD0I" data-autoplay="0" data-loop="1" class="youtube-audio"></div>  
-	<div data-video="-bBzIgIaPS4" data-autoplay="0" data-loop="1" class="youtube-audio"></div>  
-	 <div data-video="XE-f-Ng_cUA" data-autoplay="0" data-loop="1" class="youtube-audio"></div> 
-	  <div data-video="ApHL4mVUln0" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-	  <div data-video="_4IRMYuE1hI" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-	  <div data-video="vCHREyE5GzQ" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-	  <div data-video="_FeJFs6LJjU" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-	  <div data-video="P_1N6_O254g" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-	  <div data-video="G9L9jikOQzc" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-	  <div data-video="F2AitTPI5U0" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-	  <div data-video="u420qsrNTRQ" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-	  <div data-video="DVkv_IkGYh0" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-	  <div data-video="xX9l9vKCh1A" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-	  <div data-video="WQhFl7RdBh8" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-	  <div data-video="kc3ZLgN6uVQ" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-	  <div data-video="9hN6AQ68i4U" data-autoplay="0" data-loop="1" class="youtube-audio"></div>
-	  <div data-video="rLG8yReHs7k" data-autoplay="0" data-loop="1" class="youtube-audio"></div>	 
-	  <div data-video="SUpBoIEiDCs" data-autoplay="0" data-loop="1" class="youtube-audio"></div>	 
-	  <div data-video="b2Q-y3X899g" data-autoplay="0" data-loop="1" class="youtube-audio"></div>	 
-	  <div data-video="mM1dIwGO00w" data-autoplay="0" data-loop="1" class="youtube-audio"></div>	 
-	  <div data-video="BB4m143c-O8" data-autoplay="0" data-loop="1" class="yuotube-audio"></div>	
-	   <div data-video="TaV1r341wYk" data-autoplay="0" data-loop="1" class="yuotube-audio"></div>
-     </div>
-
-
-  <script src="https://www.youtube.com/iframe_api"></script>
-  <script src="yt.js"></script>
-
-  <script>
-    // Initialize each YouTube audio element in the list
-    document.querySelectorAll('.youtube-audio').forEach((el) => {
-      ytAudioInit(el);
-    });
-  </script>
-  -->
-
+  <div class="video-wrapper">
+    <iframe 
+      src="https://www.youtube.com/embed/IHv1Mp13ERI"
+      title="Hi! Caca"
+      frameborder="0"
+      allowfullscreen>
+    </iframe>
+  </div>
 </div>
 
-<div id="informacio" class="content active">
-  <h2>Információ<br>Moziverzum: 2026-ban sok film várható és kiadjuk a Mikiegérvér és pusztulat javító verzióját!
-  <br> Lottózó: innetől mozijegyet és valamikor nagyon jó cuccokat is lehet nyerni!  </h2>
-  <p><br><br><br><br><br><br><br><br><br><br><br>A weboldal fenntartója és alkotója: Tettamanti Marcell <br> Elérhetőség:<br>Email: tettamantimarcell@gmail.com <br>
-  Telefonszám: +36 30 790 3409 <br> Üzemelteti a Caca Kft. </p>
+<div id="informacio" class="content">
+  <h2>Információ</h2>
+  <p>
+    Moziverzum: 2026-ban sok film várható.<br><br>
+    A weboldal fenntartója: Tettamanti Marcell<br>
+    Email: tettamantimarcell@gmail.com<br>
+    Telefonszám: +36 30 790 3409
+  </p>
 </div>
 
-<div id="vibercsoportok" class="content active">
-  <h2>Vibercsoportok: Nyilvános vibercsoportjaink: Fos, Caca  </h2>
-  <p><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>A weboldal fenntartója és alkotója: Tettamanti Marcell <br> Elérhetőség:<br>Email: tettamantimarcell@gmail.com <br>
-  Telefonszám: +36 30 790 3409 <br> Üzemelteti: a Caca Kft. </p>
+<div id="vibercsoportok" class="content">
+  <h2>Viber csoportok</h2>
+  <p>Nyilvános vibercsoportjaink: Fos, Caca</p>
 </div>
 
 <script>
-// Function to show the selected content and update the active link
 function showContent(sectionId) {
-  // Hide all content sections
-  const contents = document.querySelectorAll('.content');
-  contents.forEach(content => content.classList.remove('active'));
+  document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.topnav a').forEach(l => l.classList.remove('active'));
 
-  // Remove 'active' class from all links
-  const links = document.querySelectorAll('.topnav a');
-  links.forEach(link => link.classList.remove('active'));
-
-  // Show the selected content and mark the link as
   document.getElementById(sectionId).classList.add('active');
   document.getElementById(sectionId + 'Link').classList.add('active');
 }
@@ -157,4 +137,3 @@ function showContent(sectionId) {
 
 </body>
 </html>
-
