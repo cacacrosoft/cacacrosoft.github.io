@@ -13,7 +13,7 @@ body {
   background-position: center;
 }
 
-/* ===== MENÜ – GÉP NÉZET (ALAP) ===== */
+/* ===== MENÜ ===== */
 .topnav {
   overflow: hidden;
   background-color: #333;
@@ -50,10 +50,10 @@ body {
   display: block;
 }
 
-/* ===== YOUTUBE – RESZPONZÍV ===== */
+/* ===== VIDEO ===== */
 .video-wrapper {
   position: relative;
-  padding-bottom: 56.25%; /* 16:9 */
+  padding-bottom: 56.25%;
   height: 0;
   max-width: 900px;
 }
@@ -66,24 +66,32 @@ body {
   height: 100%;
 }
 
-/* ===== MOBIL NÉZET ===== */
-@media (max-width: 768px) {
+/* ===== MODAL ===== */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+}
 
+.modal-content {
+  background: white;
+  color: black;
+  padding: 20px;
+  width: 300px;
+  margin: 15% auto;
+  text-align: center;
+  border-radius: 10px;
+}
+
+/* ===== MOBIL ===== */
+@media (max-width: 768px) {
   .topnav {
     flex-direction: column;
-  }
-
-  .topnav a {
-    font-size: 18px;
-    padding: 16px;
-  }
-
-  h2 {
-    font-size: 22px;
-  }
-
-  .video-wrapper {
-    max-width: 100%;
   }
 }
 </style>
@@ -95,79 +103,73 @@ body {
   <a onclick="showContent('learazasok')" class="active" id="learazasokLink">Leárazások</a>
   <a onclick="showContent('hirek')" id="hirekLink">Hírek</a>
   <a onclick="showContent('vibercsoportok')" id="vibercsoportokLink">Viber csoportok</a>
-<a onclick="showContent('cardok')" id="cardokLink">Cardok</a>
-  <a onclick="showContent('test')" id="testLink">test</a> 
+  <a onclick="showContent('cardok')" id="cardokLink">Cardok</a>
+  <a onclick="openTest()" id="testLink">test</a>
 </div>
 
 <div id="learazasok" class="content active">
-  <h2>Üdvözli a Caca Kft.<br>Most caca cardra 25% kedvezmény!<br>Ezért csak 3 üveg lesz januárban! </h2>
-
-<div class="video-wrapper">
-  <iframe 
-    src="https://www.youtube.com/embed/IHv1Mp13ERI"
-    title="Hi!Caca"
-    frameborder="0"
-    allowfullscreen>
-  </iframe>
-</div>
-
-
+  <h2>Üdvözli a Caca Kft.<br>Most caca cardra 25% kedvezmény!</h2>
+  <div class="video-wrapper">
+    <iframe src="https://www.youtube.com/embed/IHv1Mp13ERI" allowfullscreen></iframe>
+  </div>
 </div>
 
 <div id="hirek" class="content">
-  <h2>Hírek:<br>Moziverzum: 2026-ban sok film várható és kiadjuk a Mikiegérvér és pusztulat javító verzióját! <br> Lottózó: innetől mozijegyet és valamikor nagyon jó cuccokat is lehet nyerni! <br> További
-  híreinkért olvassák el Breakingnews! újságunkat.</h2>.<br></h2>
-  <p>
-   <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>A weboldal fenntartója és alkotója: Stefkó Tettamanti Marcell <br> Elérhetőség:<br>Email: tettamantimarcell@gmail.com <br> Telefonszám: +36 30 790 3409 <br> Üzemelteti: a Caca Kft. 
-  </p>
+  <h2>Hírek</h2>
 </div>
 
 <div id="vibercsoportok" class="content">
-
   <h2>Viber csoport</h2>
-
-  <a href="https://invite.viber.com/?g2=AQAsPNwakIHg%2BVXE9FrFTDgbD6Hs%2BC5saVTbiIJJx%2BgNaCuY955QP%2BuoN7T9veGx"
-     target="_blank"
-     style="
-       display:inline-block;
-       padding:15px 25px;
-       background:#7360f2;
-       color:white;
-       text-decoration:none;
-       border-radius:8px;
-       font-size:18px;
-       margin-top:10px;
-     ">
-     👉 Csatlakozás a Viber csoporthoz
-  </a>
-  
-  <h2>Viber csoport link:https://invite.viber.com/?g2=AQAsPNwakIHg%2BVXE9FrFTDgbD6Hs%2BC5saVTbiIJJx%2BgNaCuY955QP%2BuoN7T9veGx </h2>
-  <p> <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>A weboldal fenntartója és alkotója: Stefkó Soma és Tettamanti Marcell <br> Elérhetőség:<br>Email: tettamantimarcell@gmail.com <br> Telefonszám: +36 30 790 3409 <br> Üzemelteti: a Caca Kft.
-  </p>
- 
 </div>
 
 <div id="cardok" class="content">
-  <h2><br><br><br><br><br><br><br><br><br>Cacacard 3 palack/hó ____________________________Lottózócard(jelenleg nem érhető el)  </h2>
-   <img src="caca club card.jpg" alt="caca card" width="520" height="300">                                                                   <img src="lotozo.jpg" alt=lottozo+ width="520" height="300">
-  <p> <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>A weboldal fenntartója és alkotója: Stefkó Soma Tettamanti Marcell <br> Elérhetőség:<br>Email: tettamantimarcell@gmail.com <br> Telefonszám: +36 30 790 3409 <br> Üzemelteti: a Caca Kft.
-  </p>
+  <h2>Cardok</h2>
 </div>
 
+<div id="test" class="content">
+  <h2>🎉 Sikeres belépés!</h2>
+  <p>Ez a tartalom csak kóddal érhető el.</p>
+</div>
 
+<!-- ===== TEST MODAL ===== -->
+<div id="testModal" class="modal">
+  <div class="modal-content">
+    <h2>Kód szükséges</h2>
+    <input type="password" id="testCode" placeholder="Add meg a kódot">
+    <br><br>
+    <button onclick="checkTestCode()">Belépés</button>
+    <button onclick="closeTest()">Mégse</button>
+    <p id="testError" style="color:red;"></p>
+  </div>
+</div>
 
-<div id="test" class="content active">
-  <h2>Ez a menü pont jelenleg nem áll rendelkezésedre. </h2>
-
-
-  
 <script>
-function showContent(sectionId) {
+const TEST_CODE = "caca123";
+
+function showContent(id) {
   document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
   document.querySelectorAll('.topnav a').forEach(l => l.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById(id + 'Link').classList.add('active');
+}
 
-  document.getElementById(sectionId).classList.add('active');
-  document.getElementById(sectionId + 'Link').classList.add('active');
+function openTest() {
+  document.getElementById("testModal").style.display = "block";
+}
+
+function closeTest() {
+  document.getElementById("testModal").style.display = "none";
+  document.getElementById("testError").innerText = "";
+  document.getElementById("testCode").value = "";
+}
+
+function checkTestCode() {
+  if (document.getElementById("testCode").value === TEST_CODE) {
+    closeTest();
+    showContent('test');
+  } else {
+    document.getElementById("testError").innerText = "Hibás kód!";
+  }
 }
 </script>
 
