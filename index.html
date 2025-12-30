@@ -3,113 +3,128 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caca Kft.</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background-image: url('fireworks-574739_1280.jpg');
-  background-size: cover;
-  background-position: center;
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-image: url('fireworks-574739_1280.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-color: #333; /* Tartalék szín, ha a kép nem tölt be */
+  }
 
+  /* MODAL (Jelszó ablak) */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 3000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+  }
 
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 3000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.7);
-}
+  .modal-content {
+    background: white;
+    color: black;
+    padding: 30px;
+    width: 300px;
+    margin: 15% auto;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+  }
 
-.modal-content {
-  background: white;
-  color: black;
-  padding: 20px;
-  width: 300px;
-  margin: 15% auto;
-  text-align: center;
-  border-radius: 10px;
-}
+  .modal-content input {
+    padding: 10px;
+    width: 80%;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
 
-  
-}
+  .modal-content button {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #F54927;
+    color: white;
+    font-weight: bold;
+  }
 
-/* ===== MENÜ – GÉP NÉZET (ALAP) ===== */
-.topnav {
-  overflow: hidden;
-  background-color: #333;
-  display: flex;
-}
-
-.topnav a {
-  color: #f2f2f2;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
-  cursor: pointer;
-}
-
-.topnav a:hover {
-  background-color: #ddd;
-  color: black;
-}
-
-.topnav a.active {
-  background-color: #F54927;
-  color: white;
-}
-
-/* ===== TARTALOM ===== */
-.content {
-  display: none;
-  padding: 16px;
-  color: white;
-}
-
-.content.active {
-  display: block;
-}
-
-/* ===== YOUTUBE – RESZPONZÍV ===== */
-.video-wrapper {
-  position: relative;
-  padding-bottom: 56.25%; /* 16:9 */
-  height: 0;
-  max-width: 900px;
-}
-
-.video-wrapper iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-/* ===== MOBIL NÉZET ===== */
-@media (max-width: 768px) {
-
+  /* MENÜ – GÉP NÉZET */
   .topnav {
-    flex-direction: column;
+    overflow: hidden;
+    background-color: #333;
+    display: flex;
   }
 
   .topnav a {
-    font-size: 18px;
-    padding: 16px;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+    cursor: pointer;
   }
 
-  h2 {
-    font-size: 22px;
+  .topnav a:hover {
+    background-color: #ddd;
+    color: black;
   }
 
+  .topnav a.active {
+    background-color: #F54927;
+    color: white;
+  }
+
+  /* TARTALOM */
+  .content {
+    display: none;
+    padding: 20px;
+    color: white;
+    text-shadow: 1px 1px 5px black;
+  }
+
+  .content.active {
+    display: block;
+  }
+
+  /* YOUTUBE – RESZPONZÍV */
   .video-wrapper {
-    max-width: 100%;
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    height: 0;
+    max-width: 900px;
+    margin-top: 20px;
   }
-}
+
+  .video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* MOBIL NÉZET */
+  @media (max-width: 768px) {
+    .topnav {
+      flex-direction: column;
+    }
+    .topnav a {
+      font-size: 18px;
+      padding: 16px;
+    }
+    h2 {
+      font-size: 22px;
+    }
+  }
 </style>
 </head>
 
@@ -119,143 +134,125 @@ body {
   <a onclick="showContent('learazasok')" class="active" id="learazasokLink">Leárazások</a>
   <a onclick="showContent('hirek')" id="hirekLink">Hírek</a>
   <a onclick="showContent('vibercsoportok')" id="vibercsoportokLink">Viber csoportok</a>
-<a onclick="showContent('cardok')" id="cardokLink">Cardok</a>
+  <a onclick="showContent('cardok')" id="cardokLink">Cardok</a>
   <a onclick="openTestProtected()" id="testLink">test</a> 
 </div>
 
 <div id="learazasok" class="content active">
   <h2>Üdvözli a Caca Kft.<br>Most caca cardra 25% kedvezmény!<br>Ezért csak 3 üveg lesz januárban! </h2>
 
-<div class="video-wrapper">
-  <iframe 
-    src="https://www.youtube.com/embed/IHv1Mp13ERI"
-    title="Hi!Caca"
-    frameborder="0"
-    allowfullscreen>
-  </iframe>
-</div>
-
-
+  <div class="video-wrapper">
+    <iframe 
+      src="https://www.youtube.com/embed/IHv1Mp13ERI" 
+      title="Hi!Caca" 
+      frameborder="0" 
+      allowfullscreen>
+    </iframe>
+  </div>
 </div>
 
 <div id="hirek" class="content">
-  <h2>Hírek:<br>Moziverzum: 2026-ban sok film várható és kiadjuk a Mikiegérvér és pusztulat javító verzióját! <br> Lottózó: innetől mozijegyet és valamikor nagyon jó cuccokat is lehet nyerni! <br> További
-  híreinkért olvassák el Breakingnews! újságunkat.</h2>.<br></h2>
-  <p>
-   <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>A weboldal fenntartója és alkotója: Stefkó Tettamanti Marcell <br> Elérhetőség:<br>Email: tettamantimarcell@gmail.com <br> Telefonszám: +36 30 790 3409 <br> Üzemelteti: a Caca Kft. 
+  <h2>Hírek:<br>Moziverzum: 2026-ban sok film várható és kiadjuk a Mikiegérvér és pusztulat javító verzióját! <br> 
+  Lottózó: innetől mozijegyet és valamikor nagyon jó cuccokat is lehet nyerni! <br> 
+  További híreinkért olvassák el Breakingnews! újságunkat.</h2>
+  
+  <p style="margin-top: 300px;">
+    A weboldal fenntartója és alkotója: Stefkó Tettamanti Marcell <br> 
+    Email: tettamantimarcell@gmail.com <br> 
+    Telefonszám: +36 30 790 3409 <br> 
+    Üzemelteti: a Caca Kft. 
   </p>
 </div>
 
 <div id="vibercsoportok" class="content">
-
   <h2>Viber csoport</h2>
-
-  <a href="https://invite.viber.com/?g2=AQAsPNwakIHg%2BVXE9FrFTDgbD6Hs%2BC5saVTbiIJJx%2BgNaCuY955QP%2BuoN7T9veGx"
-     target="_blank"
-     style="
-       display:inline-block;
-       padding:15px 25px;
-       background:#7360f2;
-       color:white;
-       text-decoration:none;
-       border-radius:8px;
-       font-size:18px;
-       margin-top:10px;
-     ">
+  <a href="https://invite.viber.com/?g2=AQAsPNwakIHg%2BVXE9FrFTDgbD6Hs%2BC5saVTbiIJJx%2BgNaCuY955QP%2BuoN7T9veGx" 
+     target="_blank" 
+     style="display:inline-block; padding:15px 25px; background:#7360f2; color:white; text-decoration:none; border-radius:8px; font-size:18px; margin-top:10px;">
      👉 Csatlakozás a Viber csoporthoz
   </a>
-  
- <!-- <h2>Viber csoport link:https://invite.viber.com/?g2=AQAsPNwakIHg%2BVXE9FrFTDgbD6Hs%2BC5saVTbiIJJx%2BgNaCuY955QP%2BuoN7T9veGx </h2>
-  <p> <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>A weboldal fenntartója és alkotója: Stefkó Soma és Tettamanti Marcell <br> Elérhetőség:<br>Email: tettamantimarcell@gmail.com <br> Telefonszám: +36 30 790 3409 <br> Üzemelteti: a Caca Kft.
-  </p> -->
- 
 </div>
 
 <div id="cardok" class="content">
-  <h2><br><br><br><br><br><br><br><br><br>Cacacard 3 palack/hó ____________________________Lottózócard(jelenleg nem érhető el)  </h2>
-   <img src="caca club card.jpg" alt="caca card" width="520" height="300">                                                                   <img src="lotozo.jpg" alt=lottozo+ width="520" height="300">
-  <p> <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>A weboldal fenntartója és alkotója: Stefkó Soma Tettamanti Marcell <br> Elérhetőség:<br>Email: tettamantimarcell@gmail.com <br> Telefonszám: +36 30 790 3409 <br> Üzemelteti: a Caca Kft.
-  </p>
+  <div style="margin-top: 50px;">
+    <h2>Cacacard 3 palack/hó &nbsp;&nbsp;&nbsp; Lottózócard (nem elérhető)</h2>
+    <img src="caca club card.jpg" alt="caca card" width="500"> 
+    <img src="lotozo.jpg" alt="lottozo" width="500">
+  </div>
 </div>
-
-
 
 <div id="test" class="content">
   <h2>Ez a menü pont jelenleg nem áll rendelkezésedre. </h2>
-
   
-<video width="40%" height="auto" controls poster="borito-kep.jpg">
-    <source id="videoSource" src="" type="video/mp4">
-    A böngésződ nem támogatja a videó lejátszását.
-</video>
- 
-
-  
-<script>
-function showContent(sectionId) {
-  document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
-  document.querySelectorAll('.topnav a').forEach(l => l.classList.remove('active'));
-
-  document.getElementById(sectionId).classList.add('active');
-  document.getElementById(sectionId + 'Link').classList.add('active');
-}
-</script>
-
-<script>
-const TEST_CODE = "caca123"; // ← itt a kód
-
-function openTestProtected() {
-  document.getElementById("testModal").style.display = "block";
-}
-
-function closeTest() {
-  document.getElementById("testModal").style.display = "none";
-  document.getElementById("testError").innerText = "";
-  document.getElementById("testCode").value = "";
-}
-
-function checkTestCode() {
-  const input = document.getElementById("testCode").value;
-
-  if (input === TEST_CODE) {
-    closeTest();
-    showContent('test'); // 👉 a MEGLÉVŐ test tartalom jelenik meg
-  } else {
-    document.getElementById("testError").innerText = "Hibás kód! (Ha nem vagy 5-es vagy, ne próbálkozz!)";
-  }
-}
-</script>
-
-  
+  <video width="60%" height="auto" controls poster="borito-kep.jpg">
+      <source id="videoSource" src="" type="video/mp4">
+      A böngésződ nem támogatja a videó lejátszását.
+  </video>
+</div>
 
 <div id="testModal" class="modal">
   <div class="modal-content">
     <h2>Jelszó szükséges</h2>
-    <input type="password" id="testCode" placeholder="Add meg a jelszót">
+    <input type="password" id="testCode" placeholder="Add meg a jelszót" 
+           onkeydown="if(event.key === 'Enter') checkTestCode()">
     <br><br>
     <button onclick="checkTestCode()">Belépés</button>
     <button onclick="closeTest()">Mégse</button>
-    <p id="testError" style="color:red;"></p>
+    <p id="testError" style="color:red; margin-top:10px;"></p>
   </div>
 </div>
 
+<script>
+  // Alap URL a videóhoz
+  var baseUrl = "https://nodes-recommendations-samples-plain.trycloudflare.com";
+  var fileName = "cacaudv.mp4";
 
-<!-- itt kell módosítani a baseURL-t ha a servert újraindítottad -->
-  <script>
-    // Itt állíthatod be a változó értékét (az alap URL-t)
-    var baseUrl = "https://nodes-recommendations-samples-plain.trycloudflare.com";
-    
-    // A konkrét fájlnév
-    var fileName = "cacaudv.mp4";
+  // Tartalom váltó funkció
+  function showContent(sectionId) {
+    document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.topnav a').forEach(l => l.classList.remove('active'));
 
-    // Összeillesztjük és beállítjuk a forrást
-    var sourceElement = document.getElementById('videoSource');
-    sourceElement.src = baseUrl + "/" + fileName;
+    document.getElementById(sectionId).classList.add('active');
+    const link = document.getElementById(sectionId + 'Link');
+    if(link) link.classList.add('active');
+  }
 
-    // Frissítjük a videót, hogy az új forrást töltse be
-    sourceElement.parentElement.load();
+  const TEST_CODE = "caca123";
+
+  // Modal megnyitása
+  function openTestProtected() {
+    document.getElementById("testModal").style.display = "block";
+    // Automatikusan belefókuszál a mezőbe
+    setTimeout(() => {
+        document.getElementById("testCode").focus();
+    }, 100);
+  }
+
+  // Modal bezárása
+  function closeTest() {
+    document.getElementById("testModal").style.display = "none";
+    document.getElementById("testError").innerText = "";
+    document.getElementById("testCode").value = "";
+  }
+
+  // Jelszó ellenőrzése
+  function checkTestCode() {
+    const input = document.getElementById("testCode").value;
+    if (input === TEST_CODE) {
+      closeTest();
+      showContent('test');
+      
+      // Videó betöltése csak sikeres belépéskor (hogy ne terhelje a szervert feleslegesen)
+      var sourceElement = document.getElementById('videoSource');
+      if(sourceElement.src === "" || sourceElement.src === window.location.href) {
+          sourceElement.src = baseUrl + "/" + fileName;
+          sourceElement.parentElement.load();
+      }
+    } else {
+      document.getElementById("testError").innerText = "Hibás kód! (Ha nem vagy 5.res ne próbálkozz!)";
+    }
+  }
 </script>
 
-  
 </body>
-</html> 
+</html>
