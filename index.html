@@ -181,7 +181,29 @@ body {
 
 
 <div id="test" class="content active">
-  <h2>Ez a menü pont jelenleg nem áll rendelkezésedre. </h2>
+  <h2>.</h2>
+
+
+   <input 
+    type="text" 
+    id="searchInput"
+    placeholder="Keresés a tartalomban..."
+    onkeyup="searchTestContent()"
+    style="
+      padding:10px;
+      width:260px;
+      font-size:16px;
+      margin-bottom:15px;
+      border-radius:6px;
+      border:1px solid #ccc;
+    "
+  >
+
+  <!-- 📄 KERESHETŐ LISTA -->
+  <ul id="testList" style="list-style:none; padding-left:0;">
+    <li>Cacacrosoft üdvözöljük!</li>
+   
+  </ul>
 
 <h3 id="videoTitle">Cacacrosoft üdvözöljük!</h3>  
 <video width="40%" height="auto" controls poster="borito-kep.jpg">
@@ -256,6 +278,22 @@ function checkTestCode() {
     // Frissítjük a videót, hogy az új forrást töltse be
     sourceElement.parentElement.load();
 </script>
+
+  <script>
+function searchTestContent() {
+  let input = document.getElementById("searchInput").value.toLowerCase();
+  let items = document.querySelectorAll("#testList li");
+
+  items.forEach(item => {
+    if (item.innerText.toLowerCase().includes(input)) {
+      item.style.display = "block";
+    } else {
+      item.style.display = "none";
+    }
+  });
+}
+</script>
+
 
   
 </body>
