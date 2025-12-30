@@ -120,7 +120,7 @@ body {
   <a onclick="showContent('hirek')" id="hirekLink">Hírek</a>
   <a onclick="showContent('vibercsoportok')" id="vibercsoportokLink">Viber csoportok</a>
 <a onclick="showContent('cardok')" id="cardokLink">Cardok</a>
-  <a onclick="openTestProtected()" id="testLink">test</a> 
+  <a onclick="showContent('testek')" id="testLink">Test</a> 
 </div>
 
 <div id="learazasok" class="content active">
@@ -241,9 +241,9 @@ function checkTestCode() {
 
   if (input === TEST_CODE) {
     closeTest();
-    showContent('test'); // 👉 a MEGLÉVŐ test tartalom jelenik meg
+    showContent('Test'); // 👉 a MEGLÉVŐ test tartalom jelenik meg
   } else {
-    document.getElementById("testError").innerText = "Hibás kód! (Hanem vagy 5.res ne próbálkozz!)";
+    document.getElementById("testError").innerText = "Hibás kód! (Hanem vagy 5-es, ne próbálkozz!)";
   }
 }
 </script>
@@ -297,4 +297,4 @@ function searchTestContent() {
 
   
 </body>
-</html> test
+</html>
