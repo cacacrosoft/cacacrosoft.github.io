@@ -199,7 +199,7 @@
       border:1px solid #ccc;
     "
   >
-
+<br><br>
   
   <video width="60%" height="auto" controls poster="borito-kep.jpg">
       <source id="videoSource" src="" type="video/mp4">
@@ -286,6 +286,18 @@ function searchTestContent() {
   });
 }
 </script>
+
+
+  <script>
+function showContent(sectionId) {
+  document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.topnav a').forEach(l => l.classList.remove('active'));
+
+  document.getElementById(sectionId).classList.add('active');
+  document.getElementById(sectionId + 'Link').classList.add('active');
+}
+</script>
+
   
 </body>
 </html>
