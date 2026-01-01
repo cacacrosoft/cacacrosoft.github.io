@@ -201,12 +201,19 @@
   >
 <br><br>
 
+  <!-- Itt lesznek a videok -->
   <video width="40%" height="auto" controls poster="borito-kep.jpg">
-      <source id="videoSource" src="" type="video/mp4">
+      <source id="videoSource1" src="" type="video/mp4">
       A böngészd nem támogatja a videó lejátszását.
   </video>
 </div>
 
+  <video width="40%" height="auto" controls poster="borito-kep.jpg">
+      <source id="videoSource2" src="" type="video/mp4">
+      A böngészd nem támogatja a videó lejátszását.
+  </video>
+</div>
+  
 <div id="testModal" class="modal">
   <div class="modal-content">
     <h2>Jelszó szükséges</h2>
@@ -221,8 +228,9 @@
 
 <script>
   // Alap URL a videóhoz
-  var baseUrl = "https://ver-oral-finished-descriptions.trycloudflare.com";
-  var fileName = "cacaudv.mp4";
+  var baseUrl = "https://deluxe-cricket-cement-cameron.trycloudflare.com";
+  var fileName1 = "cacaudv.mp4";
+  var fileName2 = "ujev_a_horror_hazban.mp4";
 
   // Tartalom váltó funkció
   function showContent(sectionId) {
@@ -260,14 +268,25 @@
       showContent('test');
 
       // Videó betöltése csak sikeres belépéskor (hogy ne terhelje a szervert feleslegesen)
-      var sourceElement = document.getElementById('videoSource');
+      // innentol copy
+      var sourceElement = document.getElementById('videoSource1'); 
       if(sourceElement.src === "" || sourceElement.src === window.location.href) {
-          sourceElement.src = baseUrl + "/" + fileName;
+          sourceElement.src = baseUrl + "/" + fileName1; 
           sourceElement.parentElement.load();
       }
     } else {
       document.getElementById("testError").innerText = "Hibás kód! (Ha nem vagy 5-es, ne próbálkozz!)";
-    }
+    } //ez copy idaig
+    
+      var sourceElement = document.getElementById('videoSource2'); 
+      if(sourceElement.src === "" || sourceElement.src === window.location.href) {
+          sourceElement.src = baseUrl + "/" + fileName2; 
+          sourceElement.parentElement.load();
+      }
+    } else {
+      document.getElementById("testError").innerText = "Hibás kód! (Ha nem vagy 5-es, ne próbálkozz!)";
+    } 
+    
   }
 </script>
 
