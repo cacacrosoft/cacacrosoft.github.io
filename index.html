@@ -273,22 +273,21 @@
       if(sourceElement.src === "" || sourceElement.src === window.location.href) {
           sourceElement.src = baseUrl + "/" + fileName1; 
           sourceElement.parentElement.load();
-      }
-    } else {
-      document.getElementById("testError").innerText = "Hibás kód! (Ha nem vagy 5-es, ne próbálkozz!)";
-    } //ez copy idaig
+      } //ez copy idaig
+    
     
       var sourceElement = document.getElementById('videoSource2'); 
       if(sourceElement.src === "" || sourceElement.src === window.location.href) {
           sourceElement.src = baseUrl + "/" + fileName2; 
           sourceElement.parentElement.load();
       }
-    } else {
+    }
+    else {
       document.getElementById("testError").innerText = "Hibás kód! (Ha nem vagy 5-es, ne próbálkozz!)";
-    } 
-    
+    }
   }
-</script>
+</script>   
+
 
 
   <script>
