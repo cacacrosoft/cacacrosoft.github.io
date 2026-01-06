@@ -136,6 +136,7 @@
   <a onclick="showContent('vibercsoportok')" id="vibercsoportokLink">Viber csoportok</a>
   <a onclick="showContent('cardok')" id="cardokLink">Cardok</a>
   <a onclick="openTestProtected()" id="testLink"> 5.r toube</a>
+	  <a onclick="openTestProtected()" id="moziLink"> Mozi</a>
 </div>
 
 <div id="learazasok" class="content active">
@@ -181,6 +182,29 @@
   </div>
 </div>
 
+
+<div id="mozi" class="content">
+  <h2>Vásoroljon jegyet itt online!</h2>
+
+
+
+<div id="testModal" class="modal">
+  <div class="modal-content">
+    <h2>Jelszó szükséges</h2>
+    <input type="password" id="testCode" placeholder="Írd ide!" onkeydown="if(event.key === 'Enter') checkTestCode()">
+    <br><br>
+    <button onclick="checkTestCode()" style="background:#F54927; color:white; padding:10px 20px; border:none; border-radius:5px;">Ellenőrzés</button>
+    <button onclick="closeTest()">Próbálkozás késöbb</button>
+    <p id="testError" style="color:red;"></p>
+  </div>
+</div>
+
+<script>
+  const TEST_CODE = "caca123"
+
+
+	
+	
 <div id="test" class="content">
 
 
