@@ -136,7 +136,8 @@
   <a onclick="showContent('vibercsoportok')" id="vibercsoportokLink">Viber csoportok</a>
   <a onclick="showContent('cardok')" id="cardokLink">Cardok</a>
   <a onclick="openTestProtected()" id="testLink"> 5.r toube</a>
-<a onclick="showContent('mozi')" id="moziLink"> Mozi</a>
+<a onclick="openMoziProtected()" id="moziLink"> Mozi</a>
+
 </div>
 
 <div id="learazasok" class="content active">
@@ -179,6 +180,30 @@
     <h2>Cacacard 3 palack/hó &nbsp;&nbsp;&nbsp; Lottózócard (nem elérhet)</h2>
     <img src="caca club card.jpg" alt="caca card" width="500">
     <img src="lotozo.jpg" alt="lottozo" width="500">
+  </div>
+</div>
+
+	
+	<div id="mozi" class="content">
+
+
+  <h2>Mozi - Vásároljon jegyet online!</h2>
+
+
+  <p>Itt hamarosan elérhetőek lesznek a legújabb filmek.</p>
+
+
+</div>
+	
+	<div id="moziModal" class="modal">
+  <div class="modal-content">
+    <h2>Mozi kód</h2>
+    <input type="password" id="moziCode" placeholder="Add meg a kódot"
+      onkeydown="if(event.key === 'Enter') checkMoziCode()">
+    <br><br>
+    <button onclick="checkMoziCode()">Belépés</button>
+    <button onclick="closeMozi()">Mégse</button>
+    <p id="moziError" style="color:red;"></p>
   </div>
 </div>
 
@@ -310,6 +335,31 @@
     });
   }
 </script>
+	const MOZI_CODE = "caca123"; // 👉 IDE ÍRD A MOZI KÓDOT
+
+function openMoziProtected() {
+  document.getElementById("moziModal").style.display = "block";
+  setTimeout(() => {
+    document.getElementById("moziCode").focus();
+  }, 100);
+}
+
+function closeMozi() {
+  document.getElementById("moziModal").style.display = "none";
+  document.getElementById("moziCode").value = "";
+  document.getElementById("moziError").innerText = "";
+}
+
+function checkMoziCode() {
+  const input = document.getElementById("moziCode").value;
+  if (input === MOZI_CODE) {
+    closeMozi();
+    showContent('mozi');
+  } else {
+    document.getElementById("moziError").innerText = "Hibás kód!";
+  }
+}
+
 
 </body>
 </html>                                                  
