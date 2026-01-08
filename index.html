@@ -201,6 +201,7 @@ function closeMozi(){document.getElementById("moziModal").style.display="none"; 
 function checkMoziCode(){const input=document.getElementById("moziCode").value; if(input===MOZI_CODE){closeMozi(); showContent('mozi');} else document.getElementById("moziError").innerText="Hibás kód!";}
 
 // FÁJLLISTA
+  /*
 async function loadFilesFromServer(){
   const listElement=document.getElementById("dynamicFileList"); listElement.innerHTML="Betöltés...";
   try{
@@ -229,7 +230,56 @@ async function loadFilesFromServer(){
       Jelentsd be ezen a számon:<br><b>06 30 790 3409</p></div>`;
       console.error(e);
   }
+}*/
+
+  async function loadFilesFromServer() {
+  const listElement = document.getElementById("dynamicFileList");
+  listElement.innerHTML = "Betöltés...";
+  
+  // Győződj meg róla, hogy a serverUrl per jellel végződik!
+  const baseUrl = serverUrl.endsWith('/') ? serverUrl : serverUrl + '/';
+
+  try {
+    const response = await fetch(baseUrl, { mode: 'cors' });
+    if (!response.ok) throw new Error('Hálózati hiba');
+    
+    // Az Nginx JSON tömböt küld: [{name: "file.mp4", type: "file", ...}]
+    const files = await response.json(); 
+    
+    listElement.innerHTML = "";
+    let count = 0;
+
+    files.forEach(file => {
+      // Nginx JSON-ben a 'name' a fájl neve, a 'type' pedig 'file' vagy 'directory'
+      const fileName = file.name;
+      
+      // Kihagyjuk a rejtett fájlokat (opcionális)
+      if (!fileName.startsWith('.')) {
+        const fullUrl = baseUrl + fileName;
+        const a = document.createElement('a');
+        a.href = fullUrl;
+        a.className = 'file-item';
+        a.target = '_blank';
+        a.innerText = (file.type === 'directory' ? '📁 ' : '▶️ ') + fileName;
+        
+        listElement.appendChild(a);
+        count++;
+      }
+    });
+
+    if (count === 0) listElement.innerHTML = "Nem találhatók fájlok.";
+  } catch (e) {
+    listElement.innerHTML = `
+      <div style="text-align:left;">
+        <img src="https://raw.githubusercontent.com/cacacrosoft/cacacrosoft.github.io/main/ChatGPT%20Image%202026.%20jan.%208.%2018_18_39.png" style="max-width:250px;margin-bottom:15px;">
+        <p><strong>Oppssss!</strong> <br>
+        A szerver nem elérhető vagy JSON hiba történt. <br>
+        Hiba: ${e.message}</p>
+      </div>`;
+    console.error("Fetch hiba:", e);
+  }
 }
+
 
 // KERESÉS
 function filterFiles(){
