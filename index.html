@@ -222,9 +222,9 @@ async function loadFilesFromServer(){
     });
     if(count===0) listElement.innerHTML="Nem találhatók fájlok.";
   }catch(e){
-    listElement.innerHTML=`<div style="text-align:center;">
+    listElement.innerHTML=`<div style="text-align:left;">
       <img src="https://raw.githubusercontent.com/cacacrosoft/cacacrosoft.github.io/main/ChatGPT%20Image%202026.%20jan.%208.%2018_18_39.png" style="max-width:250px;margin-bottom:15px;">
-      <p style="text-align: left;"><strong>Oppssss!</strong> <br>
+      <p><strong>Oppssss!</strong> <br>
       A szerver nagy valószínűséggel nem üzemel. <br>
       Jelentsd be ezen a számon:<br><b>06 30 790 3409</p></div>`;
       console.error(e);
