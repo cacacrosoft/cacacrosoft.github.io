@@ -18,55 +18,66 @@
     text-shadow: 1px 1px 5px black;
   }
 
-  .menu5r {
-  display: none;
-  position: absolute;
-  top: 60px;
-  left: 10px;
-  background: rgba(0,0,0,0.85);
-  border-radius: 12px;
-  padding: 10px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-  z-index: 5000;
-}
-
-.menu5r button {
-  display: block;
-  width: 100%;
-  background: none;
-  border: none;
-  color: white;
-  padding: 12px 20px;
-  text-align: left;
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 8px;
-}
-
-.menu5r button:hover {
-  background: #312abd;
-}
-
-
+  /* TOPNAV JAVÍTÁSA */
   .topnav {
     display: flex;
     background-color: #333;
-    overflow: hidden;
-    z-index: 10;
+    overflow: visible; /* FONTOS: visible kell, különben nem látszik a legördülő */
+    z-index: 100;
     position: relative;
   }
 
   .topnav a {
     padding: 14px 16px;
     text-decoration: none;
-    color:#312abd
+    color: #312abd;
     font-size: 17px;
     cursor: pointer;
+    display: inline-block;
   }
 
   .topnav a.active { background-color: #312abd; color: white; }
   .topnav a:hover { background-color: #ddd; color: black; }
 
+  /* LEGERDÜLŐ KONTÉNER */
+  .dropdown-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* ALMENÜ STÍLUSA */
+  .menu5r {
+    display: none;
+    position: absolute;
+    top: 100%; /* Pontosan a gomb alatt */
+    left: 0;
+    background: rgba(0, 0, 0, 0.9);
+    border-radius: 0 0 12px 12px;
+    padding: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    z-index: 5000;
+    min-width: 180px;
+  }
+
+  .menu5r button {
+    display: block;
+    width: 100%;
+    background: none;
+    border: none;
+    color: white;
+    padding: 12px 20px;
+    text-align: left;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .menu5r button:hover {
+    background: #312abd;
+  }
+
+  /* EGYÉB TARTALMAK */
   .content {
     display: none;
     padding: 20px;
@@ -89,10 +100,11 @@
   .file-item { display: block; margin-bottom: 5px; color: #00ff00; text-decoration: none; }
   .file-item:hover { text-decoration: underline; }
 
+  /* MODAL */
   .modal {
     display: none;
     position: fixed;
-    z-index: 3000;
+    z-index: 6000;
     left: 0; top: 0;
     width: 100%; height: 100%;
     background: rgba(0,0,0,0.8);
@@ -114,23 +126,29 @@
   .modal-content button { padding:10px 20px; margin:5px; border:none; border-radius:5px; background:#F54927; color:white; font-weight:bold; cursor:pointer; }
 
   @media(max-width:768px){
-    .topnav{flex-direction:column;}
-    .topnav a{font-size:18px; padding:16px;}
-    h2{font-size:22px;}
+    .topnav{ flex-direction: column; overflow: visible; }
+    .topnav a{ font-size:18px; padding:16px; width: 100%; box-sizing: border-box; }
+    .dropdown-container { width: 100%; }
+    .menu5r { position: static; width: 100%; box-sizing: border-box; border-radius: 0; }
   }
 </style>
 </head>
 <body>
 
 <div class="topnav">
-  <a onclick="showContent('learazasok')" class="active">Leárazások</a>
-  <a onclick="showContent('hirek')">Hírek</a>
-  <a onclick="showContent('vibercsoportok')">Viber csoportok</a>
-  <a onclick="showContent('cardok')">Cardok</a>
+  <a onclick="showContent('learazasok')" id="learazasokLink" class="active">Leárazások</a>
+  <a onclick="showContent('hirek')" id="hirekLink">Hírek</a>
+  <a onclick="showContent('vibercsoportok')" id="vibercsoportokLink">Viber csoportok</a>
+  <a onclick="showContent('cardok')" id="cardokLink">Cardok</a>
 
-  <a onclick="toggle5rMenu()" id="otrLink">5.r</a>
+  <div class="dropdown-container">
+    <a onclick="toggle5rMenu()" id="otrLink">5.r ▾</a>
+    <div id="menu5r" class="menu5r">
+      <button onclick="openTestProtected()">▶️ 5.r toube</button>
+      <button onclick="openMoziProtected()">🎬 Mozi</button>
+    </div>
+  </div>
 </div>
-
 
 <div id="learazasok" class="content active">
   <h2>Üdvözli a Caca Kft.<br>Most caca cardra 25% kedvezmény!<br>Ezért csak 3 üveg lesz januárban!</h2>
@@ -178,12 +196,6 @@
   </div>
 </div>
 
-<div id="menu5r" class="menu5r">
-  <button onclick="openTestProtected()">▶️ 5.r toube</button>
-  <button onclick="openMoziProtected()">🎬 Mozi</button>
-</div>
-
-
 <div id="test" class="content">
   <img src="https://raw.githubusercontent.com/cacacrosoft/cacacrosoft.github.io/main/Slide2.jpg" style="width:200px;">
   <h2>Üdvözli az 5.r toube!</h2>
@@ -215,77 +227,53 @@ function showContent(sectionId){
   document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
   document.querySelectorAll('.topnav a').forEach(l=>l.classList.remove('active'));
   document.getElementById(sectionId).classList.add('active');
-  if(document.getElementById(sectionId+'Link')) document.getElementById(sectionId+'Link').classList.add('active');
+  const link = document.getElementById(sectionId+'Link');
+  if(link) link.classList.add('active');
+
+  // Almenü bezárása váltáskor
+  document.getElementById("menu5r").style.display = "none";
 }
 
-// 5.R TOUBE
-function openTestProtected(){ document.getElementById("testModal").style.display="block"; setTimeout(()=>document.getElementById("testCode").focus(),100);}
+function toggle5rMenu() {
+  const menu = document.getElementById("menu5r");
+  menu.style.display = (menu.style.display === "block") ? "none" : "block";
+}
+
+// 5.R TOUBE VÉDELEM
+function openTestProtected(){
+  document.getElementById("menu5r").style.display = "none";
+  document.getElementById("testModal").style.display="block";
+  setTimeout(()=>document.getElementById("testCode").focus(),100);
+}
 function closeTest(){ document.getElementById("testModal").style.display="none"; document.getElementById("testCode").value=""; document.getElementById("testError").innerText="";}
 function checkTestCode(){
   const input=document.getElementById("testCode").value;
   if(input===TEST_CODE){closeTest(); showContent('test'); loadFilesFromServer();}
-  else document.getElementById("testError").innerText="Hibáskód";
+  else document.getElementById("testError").innerText="Hibás kód";
 }
 
-// MOZI
-function openMoziProtected(){document.getElementById("moziModal").style.display="block"; setTimeout(()=>document.getElementById("moziCode").focus(),100);}
+// MOZI VÉDELEM
+function openMoziProtected(){
+  document.getElementById("menu5r").style.display = "none";
+  document.getElementById("moziModal").style.display="block";
+  setTimeout(()=>document.getElementById("moziCode").focus(),100);
+}
 function closeMozi(){document.getElementById("moziModal").style.display="none"; document.getElementById("moziCode").value=""; document.getElementById("moziError").innerText="";}
 function checkMoziCode(){const input=document.getElementById("moziCode").value; if(input===MOZI_CODE){closeMozi(); showContent('mozi');} else document.getElementById("moziError").innerText="Hibás kód!";}
 
-// FÁJLLISTA
-  /*
-async function loadFilesFromServer(){
-  const listElement=document.getElementById("dynamicFileList"); listElement.innerHTML="Betöltés...";
-  try{
-    const response=await fetch(serverUrl,{mode:'cors'});
-    const text=await response.text();
-    const parser=new DOMParser();
-    const doc=parser.parseFromString(text,'text/html');
-    const links=doc.querySelectorAll('a');
-    listElement.innerHTML="";
-    let count=0;
-    links.forEach(link=>{
-      const href=link.getAttribute('href');
-      if(href && !href.startsWith('?') && href!=='/' && !href.includes('apache')){
-        const fullUrl=href.startsWith('http')?href:serverUrl+href;
-        const fileName=link.innerText||href;
-        const a=document.createElement('a'); a.href=fullUrl; a.className='file-item'; a.target='_blank'; a.innerText='▶️ '+fileName;
-        listElement.appendChild(a); count++;
-      }
-    });
-    if(count===0) listElement.innerHTML="Nem találhatók fájlok.";
-  }catch(e){
-    listElement.innerHTML=`<div style="text-align:left;">
-      <img src="https://raw.githubusercontent.com/cacacrosoft/cacacrosoft.github.io/main/ChatGPT%20Image%202026.%20jan.%208.%2018_18_39.png" style="max-width:250px;margin-bottom:15px;">
-      <p><strong>Oppssss!</strong> <br>
-      A szerver nagy valószínűséggel nem üzemel. <br>
-      Jelentsd be ezen a számon:<br><b>06 30 790 3409</p></div>`;
-      console.error(e);
-  }
-}*/
-
-  async function loadFilesFromServer() {
+async function loadFilesFromServer() {
   const listElement = document.getElementById("dynamicFileList");
   listElement.innerHTML = "Betöltés...";
-
-  // Győződj meg róla, hogy a serverUrl per jellel végződik!
   const baseUrl = serverUrl.endsWith('/') ? serverUrl : serverUrl + '/';
 
   try {
     const response = await fetch(baseUrl, { mode: 'cors' });
     if (!response.ok) throw new Error('Hálózati hiba');
-
-    // Az Nginx JSON tömböt küld: [{name: "file.mp4", type: "file", ...}]
     const files = await response.json();
-
     listElement.innerHTML = "";
     let count = 0;
-
     files.forEach(file => {
-      // Nginx JSON-ben a 'name' a fájl neve, a 'type' pedig 'file' vagy 'directory'
       const fileName = file.name;
-
-      // Kihagyjuk a rejtett fájlokat (opcionális)
       if (!fileName.startsWith('.')) {
         const fullUrl = baseUrl + fileName;
         const a = document.createElement('a');
@@ -293,56 +281,33 @@ async function loadFilesFromServer(){
         a.className = 'file-item';
         a.target = '_blank';
         a.innerText = (file.type === 'directory' ? '📁 ' : '▶️ ') + fileName;
-
         listElement.appendChild(a);
         count++;
       }
     });
-
     if (count === 0) listElement.innerHTML = "Nem találhatók fájlok.";
   } catch (e) {
-    listElement.innerHTML = `
-      <div style="text-align:left;">
-        <img src="https://raw.githubusercontent.com/cacacrosoft/cacacrosoft.github.io/main/ChatGPT%20Image%202026.%20jan.%208.%2018_18_39.png" style="max-width:250px;margin-bottom:15px;">
-        <p><strong>Oppssss!</strong> <br>
-        A szerver nem elérhető vagy JSON hiba történt. <br>
-        Hiba: ${e.message}</p>
-      </div>`;
-    console.error("Fetch hiba:", e);
+    listElement.innerHTML = `<p>Szerverhiba vagy nincs JSON válasz.</p>`;
+    console.error(e);
   }
 }
 
-
-// KERESÉS
 function filterFiles(){
   let input=document.getElementById("searchInput").value.toLowerCase();
   document.querySelectorAll(".file-item").forEach(item=>item.style.display=item.innerText.toLowerCase().includes(input)?"block":"none");
 }
 
-// HÁTTÉRRE KATTINTÁS → MODAL BEZÁRÁS
+// Kattintás kívülre -> bezárás
 window.onclick=function(event){
   if(event.target==document.getElementById("testModal")) closeTest();
   if(event.target==document.getElementById("moziModal")) closeMozi();
-}
 
-
-function toggle5rMenu() {
-  const menu = document.getElementById("menu5r");
-  menu.style.display = menu.style.display === "block" ? "none" : "block";
-}
-
-/* kattintás máshol → bezár */
-document.addEventListener("click", function(e) {
   const menu = document.getElementById("menu5r");
   const btn = document.getElementById("otrLink");
-
-  if (!menu.contains(e.target) && e.target !== btn) {
+  if (menu.style.display === "block" && event.target !== btn && !menu.contains(event.target)) {
     menu.style.display = "none";
   }
-});
-
-
-
+}
 </script>
 </body>
 </html>
