@@ -18,6 +18,36 @@
     text-shadow: 1px 1px 5px black;
   }
 
+  .menu5r {
+  display: none;
+  position: absolute;
+  top: 60px;
+  left: 10px;
+  background: rgba(0,0,0,0.85);
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  z-index: 5000;
+}
+
+.menu5r button {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  color: white;
+  padding: 12px 20px;
+  text-align: left;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.menu5r button:hover {
+  background: #312abd;
+}
+
+
   .topnav {
     display: flex;
     background-color: #333;
@@ -93,14 +123,14 @@
 <body>
 
 <div class="topnav">
-  <a onclick="showContent('learazasok')" class="active" id="learazasokLink">Leárazások</a>
-  <a onclick="showContent('hirek')" id="hirekLink">Hírek</a>
-  <a onclick="showContent('vibercsoportok')" id="vibercsoportokLink">Viber csoportok</a>
-  <a onclick="showContent('cardok')" id="cardokLink">Cardok</a>
-  <a onclick="openTestProtected()" id="testLink">5.r toube</a>
-  <a onclick="openMoziProtected()" id="moziLink">Mozi</a>
-  <a onclick="showContent('otr')" id="otrLink">5.r</a>
+  <a onclick="showContent('learazasok')" class="active">Leárazások</a>
+  <a onclick="showContent('hirek')">Hírek</a>
+  <a onclick="showContent('vibercsoportok')">Viber csoportok</a>
+  <a onclick="showContent('cardok')">Cardok</a>
+
+  <a onclick="toggle5rMenu()" id="otrLink">5.r</a>
 </div>
+
 
 <div id="learazasok" class="content active">
   <h2>Üdvözli a Caca Kft.<br>Most caca cardra 25% kedvezmény!<br>Ezért csak 3 üveg lesz januárban!</h2>
@@ -148,9 +178,11 @@
   </div>
 </div>
 
-<div id="otr" class="content">
-  <h2>Ez a menüpont nem elérhető!</h2>
+<div id="menu5r" class="menu5r">
+  <button onclick="openTestProtected()">▶️ 5.r toube</button>
+  <button onclick="openMoziProtected()">🎬 Mozi</button>
 </div>
+
 
 <div id="test" class="content">
   <img src="https://raw.githubusercontent.com/cacacrosoft/cacacrosoft.github.io/main/Slide2.jpg" style="width:200px;">
@@ -235,24 +267,24 @@ async function loadFilesFromServer(){
   async function loadFilesFromServer() {
   const listElement = document.getElementById("dynamicFileList");
   listElement.innerHTML = "Betöltés...";
-  
+
   // Győződj meg róla, hogy a serverUrl per jellel végződik!
   const baseUrl = serverUrl.endsWith('/') ? serverUrl : serverUrl + '/';
 
   try {
     const response = await fetch(baseUrl, { mode: 'cors' });
     if (!response.ok) throw new Error('Hálózati hiba');
-    
+
     // Az Nginx JSON tömböt küld: [{name: "file.mp4", type: "file", ...}]
-    const files = await response.json(); 
-    
+    const files = await response.json();
+
     listElement.innerHTML = "";
     let count = 0;
 
     files.forEach(file => {
       // Nginx JSON-ben a 'name' a fájl neve, a 'type' pedig 'file' vagy 'directory'
       const fileName = file.name;
-      
+
       // Kihagyjuk a rejtett fájlokat (opcionális)
       if (!fileName.startsWith('.')) {
         const fullUrl = baseUrl + fileName;
@@ -261,7 +293,7 @@ async function loadFilesFromServer(){
         a.className = 'file-item';
         a.target = '_blank';
         a.innerText = (file.type === 'directory' ? '📁 ' : '▶️ ') + fileName;
-        
+
         listElement.appendChild(a);
         count++;
       }
@@ -292,6 +324,25 @@ window.onclick=function(event){
   if(event.target==document.getElementById("testModal")) closeTest();
   if(event.target==document.getElementById("moziModal")) closeMozi();
 }
+
+
+function toggle5rMenu() {
+  const menu = document.getElementById("menu5r");
+  menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+/* kattintás máshol → bezár */
+document.addEventListener("click", function(e) {
+  const menu = document.getElementById("menu5r");
+  const btn = document.getElementById("otrLink");
+
+  if (!menu.contains(e.target) && e.target !== btn) {
+    menu.style.display = "none";
+  }
+});
+
+
+
 </script>
 </body>
 </html>
