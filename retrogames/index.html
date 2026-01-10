@@ -4,12 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Snake - Cacacrosoft Kft.</title>
-
 <style>
   body {
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
-    /* Fontos: / jel az elején, hogy a főkönyvtárból olvassa */
+    /* Fontos: a / jel az elején biztosítja, hogy a főkönyvtárból töltse be a képet */
     background-image: url('/arizona-9839880.jpg');
     background-size: cover;
     background-position: center;
@@ -36,45 +35,14 @@
     display: inline-block;
   }
 
+  /* A Snake link aktív stílusa */
   .topnav a.active { background-color: #312abd; color: white; }
   .topnav a:hover { background-color: #ddd; color: black; }
 
-  .dropdown-container {
-    position: relative;
-    display: inline-block;
+  .content {
+    padding: 20px;
+    text-align: center;
   }
-
-  .menu5r {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background: rgba(0, 0, 0, 0.9);
-    border-radius: 0 0 12px 12px;
-    padding: 10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-    z-index: 5000;
-    min-width: 180px;
-  }
-
-  .menu5r button {
-    display: block;
-    width: 100%;
-    background: none;
-    border: none;
-    color: white;
-    padding: 12px 20px;
-    text-align: left;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
-
-  .menu5r button:hover { background: #312abd; }
-
-  .content { display: none; padding: 20px; }
-  .content.active { display: block; }
 
   #snake-canvas {
     border: 5px solid #04AA6D;
@@ -84,7 +52,10 @@
     box-shadow: 0 0 20px #04AA6D;
   }
 
-  .game-info { text-align: center; font-size: 24px; margin-bottom: 10px; }
+  .game-info {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
 
   .reset-btn {
     display: block;
@@ -98,72 +69,118 @@
     font-size: 18px;
   }
 
-  /* ... (Többi stílusod változatlanul marad) ... */
-  .modal { display: none; position: fixed; z-index: 6000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); }
-  .modal-content { background: white; color: black; padding: 30px; width: 300px; margin: 15% auto; text-align: center; border-radius: 10px; }
+  @media(max-width:768px){
+    .topnav{ flex-direction: column; }
+    .topnav a { width: 100%; box-sizing: border-box; }
+  }
 </style>
 </head>
-<body onload="initSnake()">
+<body>
 
 <div class="topnav">
-  <!-- A főoldalra mutató linkeknél fontos a / jel -->
-  <a href="/">Leárazások</a>
-  <a onclick="showContent('hirek')" id="hirekLink">Hírek</a>
-  <a onclick="showContent('vibercsoportok')" id="vibercsoportokLink">Viber csoportok</a>
-  <a onclick="showContent('cardok')" id="cardokLink">Cardok</a>
-  <a onclick="showContent('jatek')" id="jatekLink" class="active">Snake</a>
-
-  <div class="dropdown-container">
-    <a onclick="toggle5rMenu()" id="otrLink">5.r ▾</a>
-    <div id="menu5r" class="menu5r">
-      <button onclick="openTestProtected()">▶️ 5.r toube</button>
-      <button onclick="openMoziProtected()">🎬 Mozi</button>
-    </div>
-  </div>
+  <!-- Itt a linkek visszavisznek a főoldal megfelelő részére -->
+  <a href="/#learazasok">Leárazások</a>
+  <a href="/#hirek">Hírek</a>
+  <a href="/#vibercsoportok">Viber csoportok</a>
+  <a href="/#cardok">Cardok</a>
+  <a href="/snake" class="active">Snake</a>
 </div>
 
-<!-- Csak a játék van active-on -->
-<div id="jatek" class="content active">
-  <h2>Snake</h2>
+<div id="jatek" class="content">
+  <h2>Snake Játék</h2>
   <div class="game-info">Pontszám: <span id="scoreVal">0</span></div>
   <canvas id="snake-canvas" width="400" height="400"></canvas>
-  <button class="reset-btn" onclick="initSnake()">New Game</button>
-  <p style="text-align:center;">Irányítás: Nyilak a billentyűzeten</p>
-</div>
-
-<!-- A többi tartalom rejtve marad, ha valaki átkattint a menüben -->
-<div id="learazasok" class="content">
-  <h2>Üdvözli a Caca Kft.</h2>
-  <p>Vissza a főoldalra: <a href="/" style="color:white;">Kattints ide</a></p>
-</div>
-
-<div id="cardok" class="content">
-  <h2>Cacacard</h2>
-  <img src="/caca club card.jpg" alt="caca card" width="250">
+  <button class="reset-btn" onclick="initSnake()">Új játék</button>
+  <p>Irányítás: Nyilak a billentyűzeten</p>
 </div>
 
 <script>
-// Ide másold be a Snake játékod teljes JavaScript logikáját
-// Mert a korábbi üzenetedben ez a rész lemaradt!
+// --- SNAKE JÁTÉK LOGIKA ---
+const canvas = document.getElementById("snake-canvas");
+const ctx = canvas.getContext("2d");
+const scoreElement = document.getElementById("scoreVal");
+
+const box = 20;
+let snake, food, score, d, game;
 
 function initSnake() {
-    console.log("Snake játék indul...");
-    // Ide jön a canvas rajzoló és kígyó mozgató kódod
+    clearInterval(game);
+    snake = [];
+    snake[0] = { x: 9 * box, y: 10 * box };
+    
+    food = {
+        x: Math.floor(Math.random() * 19 + 1) * box,
+        y: Math.floor(Math.random() * 19 + 1) * box
+    };
+    
+    score = 0;
+    scoreElement.innerHTML = score;
+    d = null; 
+    game = setInterval(draw, 100);
 }
 
-function showContent(sectionId){
-  document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
-  document.querySelectorAll('.topnav a').forEach(l=>l.classList.remove('active'));
-  document.getElementById(sectionId).classList.add('active');
-  const link = document.getElementById(sectionId+'Link');
-  if(link) link.classList.add('active');
-  document.getElementById("menu5r").style.display = "none";
+document.addEventListener("keydown", direction);
+
+function direction(event) {
+    let key = event.keyCode;
+    if(key == 37 && d != "RIGHT") d = "LEFT";
+    else if(key == 38 && d != "DOWN") d = "UP";
+    else if(key == 39 && d != "LEFT") d = "RIGHT";
+    else if(key == 40 && d != "UP") d = "DOWN";
 }
 
-function toggle5rMenu() {
-  const menu = document.getElementById("menu5r");
-  menu.style.display = (menu.style.display === "block") ? "none" : "block";
+function collision(head, array) {
+    for(let i = 0; i < array.length; i++) {
+        if(head.x == array[i].x && head.y == array[i].y) return true;
+    }
+    return false;
 }
+
+function draw() {
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    for(let i = 0; i < snake.length; i++) {
+        ctx.fillStyle = (i == 0) ? "#04AA6D" : "white";
+        ctx.fillRect(snake[i].x, snake[i].y, box, box);
+        ctx.strokeStyle = "black";
+        ctx.strokeRect(snake[i].x, snake[i].y, box, box);
+    }
+
+    ctx.fillStyle = "red";
+    ctx.fillRect(food.x, food.y, box, box);
+
+    let snakeX = snake[0].x;
+    let snakeY = snake[0].y;
+
+    if( d == "LEFT") snakeX -= box;
+    if( d == "UP") snakeY -= box;
+    if( d == "RIGHT") snakeX += box;
+    if( d == "DOWN") snakeY += box;
+
+    if(snakeX == food.x && snakeY == food.y) {
+        score++;
+        scoreElement.innerHTML = score;
+        food = {
+            x: Math.floor(Math.random() * 19 + 1) * box,
+            y: Math.floor(Math.random() * 19 + 1) * box
+        };
+    } else {
+        snake.pop();
+    }
+
+    let newHead = { x: snakeX, y: snakeY };
+
+    if(snakeX < 0 || snakeX >= canvas.width || snakeY < 0 || snakeY >= canvas.height || collision(newHead, snake)) {
+        clearInterval(game);
+        alert("Játék vége! Pontszámod: " + score);
+    }
+
+    snake.unshift(newHead);
+}
+
+// Indítás betöltéskor
+initSnake();
 </script>
 
 </body>
