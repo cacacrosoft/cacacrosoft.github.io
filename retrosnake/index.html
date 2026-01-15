@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title> Snake</title>
+<title>Retro Snake</title>
 
 <style>
   body {
     margin: 0;
     font-family: 'Segoe UI', Arial, sans-serif;
-    /* Sötét, csillagos háttér effektus */
     background-image: url('game1.png');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
     color: white;
+    overflow: hidden;
   }
 
   .topnav { display: flex; background-color: #111; border-bottom: 2px solid #312abd; }
@@ -28,18 +28,15 @@
     position: relative;
     width: 320px;
     margin: 40px auto;
-    /* Keret neon fénye */
     box-shadow: 0 0 30px rgba(49, 42, 189, 0.4);
   }
 
   canvas {
-  border: 3px solid #312abd;
-  background-image: url('https://raw.githubusercontent.com/cacacrosoft/cacacrosoft.github.io/main/2c658366-303e-467e-8824-adc2671c0dca.png'),
-                    radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
-  background-size: cover;
-  display: block;
-  box-shadow: 0 0 20px rgba(49, 42, 189, 0.5);
-}
+    border: 3px solid #312abd;
+    background-color: #090a0f;
+    display: block;
+    box-shadow: 0 0 20px rgba(49, 42, 189, 0.5);
+  }
 
   #playOverlay {
     position: absolute;
@@ -66,15 +63,9 @@
     transition: 0.3s;
   }
 
-  /* Egyedi neon gombok */
   .btn-easy { border-color: #04AA6D; color: #04AA6D; }
-  .btn-easy:hover { background: #04AA6D; color: white; box-shadow: 0 0 20px #04AA6D; }
-
   .btn-hard { border-color: #ff9800; color: #ff9800; }
-  .btn-hard:hover { background: #ff9800; color: white; box-shadow: 0 0 20px #ff9800; }
-
   .btn-extreme { border-color: #f44336; color: #f44336; }
-  .btn-extreme:hover { background: #f44336; color: white; box-shadow: 0 0 20px #f44336; }
 
   .mobile-controls {
     margin-top: 20px;
@@ -91,34 +82,28 @@
     color: #312abd;
     font-size: 24px;
     border-radius: 50%;
-    box-shadow: 0 0 10px rgba(49, 42, 189, 0.3);
   }
 
-  @media (min-width: 800px) { .mobile-controls { display: none; } }
+  .level-indicator {
+    font-weight: bold;
+    margin-top: 5px;
+    color: #00ffcc;
+  }
 </style>
-
-
 </head>
 <body>
 
-<div class="topnav">
-  <a href="viber://forward?text=Have a look on it: https://cacacrosoft.github.io/retrosnake/">
-   Share on Viber!
-</a>
-</div>
-
-
-
 <div id="jatek" class="content active">
-  <h2 style="text-shadow: 0 0 15px #312abd;">CACA SNAKE</h2>
-  <div style="font-size: 20px; margin-bottom: 10px; color: #04AA6D; text-shadow: 0 0 5px #04AA6D;">
+  <h2 id="gameTitle" style="text-shadow: 0 0 15px #312abd;">CACA SNAKE</h2>
+  <div class="level-indicator" id="levelText">Download the app</div>
+  <div style="font-size: 20px; margin: 10px; color: #04AA6D;">
     Score: <span id="scoreVal">0</span>
   </div>
 
   <div id="game-wrapper">
     <canvas id="snake-canvas" width="320" height="320"></canvas>
     <div id="playOverlay">
-      <h3 style="margin-bottom: 20px; letter-spacing: 2px;">CHOOSE A LEVEL!</h3>
+      <h3>CHOOSE A LEVEL!</h3>
       <button class="play-btn btn-easy" onclick="startGameNow(200)">EASY</button>
       <button class="play-btn btn-hard" onclick="startGameNow(100)">HARD</button>
       <button class="play-btn btn-extreme" onclick="startGameNow(60)">EXTREME</button>
@@ -131,62 +116,31 @@
     <div style="grid-row: 2; grid-column: 2;"><button class="ctrl-btn" onclick="setDir('DOWN')">▼</button></div>
     <div style="grid-row: 2; grid-column: 3;"><button class="ctrl-btn" onclick="setDir('RIGHT')">▶</button></div>
   </div>
-
-<!-- Google AdSense hirdetés -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7210541623763039"
-     crossorigin="anonymous"></script>
-<!-- snake -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-7210541623763039"
-     data-ad-slot="2620554127"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-<!-- Google AdSense hirdetés vége -->
-
 </div>
 
 <script>
-
 let audioCtx;
-
-function playEatSound() {
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-
-  osc.type = "square";
-  osc.frequency.value = 850;
-
-  gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
-
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-
-  osc.start();
-  osc.stop(audioCtx.currentTime + 0.08);
-}
-
-
 const canvas = document.getElementById("snake-canvas");
 const ctx = canvas.getContext("2d");
 const box = 16;
-let snake, food, d, score, gameInterval;
-let currentSpeed = 120;
 
-function showContent(sectionId) {
-  document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
-  document.querySelectorAll('.topnav a').forEach(a => a.classList.remove('active'));
-  document.getElementById(sectionId).classList.add('active');
-  document.getElementById(sectionId + 'Link').classList.add('active');
-  if(sectionId !== 'jatek') clearInterval(gameInterval);
+let snake, food, d, score, gameInterval;
+let currentSpeed = 180;
+let currentLevel = 1;
+let robot = { x: -100, y: -100 }; // Kezdetben a pályán kívül
+
+function playEatSound() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = "square";
+  osc.frequency.value = 850;
+  gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start();
+  osc.stop(audioCtx.currentTime + 0.08);
 }
 
 function startGameNow(speed) {
@@ -200,7 +154,11 @@ function initSnake() {
   snake = [{ x: 10 * box, y: 10 * box }];
   score = 0;
   d = "RIGHT";
+  currentLevel = 1;
+  robot = { x: -100, y: -100 };
   document.getElementById("scoreVal").innerText = score;
+  document.getElementById("levelText").innerText = "LEVEL 1: NEON CITY";
+  document.getElementById("levelText").style.color = "#00ffcc";
   spawnFood();
   gameInterval = setInterval(draw, currentSpeed);
 }
@@ -227,38 +185,56 @@ function setDir(dir) {
 }
 
 function draw() {
-
+  // Pálya törlése és háttér stílus szint szerint
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Opcionális: Egy nagyon halvány, sötét réteg, hogy jobban kijöjjön a neon
-  ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
+  if (currentLevel === 2) {
+    ctx.fillStyle = "rgba(50, 0, 0, 0.4)"; // Vöröses "riasztás" háttér
+  } else {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
+  }
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Innen folytatódik a rácsháló és a kígyó rajzolása...
+  // Robot kezelése (Csak Level 2-ben)
+  if (currentLevel === 2) {
+    // Robot AI: az alma felé megy
+    if (robot.x < food.x) robot.x += box;
+    else if (robot.x > food.x) robot.x -= box;
+    else if (robot.y < food.y) robot.y += box;
+    else if (robot.y > food.y) robot.y -= box;
 
-  // --- KÍGYÓ RAJZOLÁSA NEON EFFEKTEL ---
+    // Robot rajzolása
+    ctx.fillStyle = "#ff0000";
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = "#ff0000";
+    ctx.fillRect(robot.x + 1, robot.y + 1, box - 2, box - 2);
+    ctx.fillStyle = "white";
+    ctx.fillRect(robot.x + 4, robot.y + 4, 2, 2); // Szemek
+    ctx.fillRect(robot.x + 10, robot.y + 4, 2, 2);
+    ctx.shadowBlur = 0;
+
+    // Ha a robot eszi meg az almát
+    if (robot.x === food.x && robot.y === food.y) {
+        spawnFood();
+    }
+  }
+
+  // Kígyó rajzolása
   for(let i = 0; i < snake.length; i++) {
     const isHead = (i === 0);
     ctx.fillStyle = isHead ? "#00ffcc" : "#0088ff";
-
-    // Glow (világítás) effekt
     ctx.shadowBlur = 15;
     ctx.shadowColor = isHead ? "#00ffcc" : "#0088ff";
-
-    // Kerekített test
     ctx.fillRect(snake[i].x + 1, snake[i].y + 1, box - 2, box - 2);
   }
 
-  // --- ÉTEL RAJZOLÁSA (PIROS IZZÁS) ---
+  // Étel rajzolása
   ctx.fillStyle = "#ff0055";
   ctx.shadowBlur = 20;
   ctx.shadowColor = "#ff0055";
-  // Az étel legyen kör alakú vagy kis ragyogó pont
   ctx.beginPath();
   ctx.arc(food.x + box/2, food.y + box/2, box/2 - 2, 0, Math.PI * 2);
   ctx.fill();
-
-  // Shadow reset (hogy ne lassítsa a többi műveletet)
   ctx.shadowBlur = 0;
 
   let snakeX = snake[0].x;
@@ -271,24 +247,35 @@ function draw() {
 
   let newHead = { x: snakeX, y: snakeY };
 
+  // Ütközés falakkal vagy saját testtel
   if(snakeX < 0 || snakeX >= canvas.width || snakeY < 0 || snakeY >= canvas.height || collision(newHead, snake)) {
-    clearInterval(gameInterval);
-    alert("GAME OVER! Score: " + score);
-    document.getElementById("playOverlay").style.display = "flex";
+    gameOver("GAME OVER!");
     return;
   }
 
- if(snakeX == food.x && snakeY == food.y) {
-  score++;
-  document.getElementById("scoreVal").innerText = score;
+  // Ütközés a robottal
+  if (currentLevel === 2 && snakeX === robot.x && snakeY === robot.y) {
+    gameOver("THE ROBOT IS CAUGHT!");
+    return;
+  }
 
-  playEatSound(); // 🔊 CSAK EZ AZ ÚJ SOR
+  // Étel megevése
+  if(snakeX == food.x && snakeY == food.y) {
+    score++;
+    document.getElementById("scoreVal").innerText = score;
+    playEatSound();
+    spawnFood();
 
-  spawnFood();
-} else {
-  snake.pop();
-}
-
+    // SZINTVÁLTÁS 10 pontnál
+    if (score === 13 && currentLevel === 1) {
+        currentLevel = 2;
+        robot.x = 0; robot.y = 0;
+        document.getElementById("levelText").innerText = "Watch out, the robot is coming!";
+        document.getElementById("levelText").style.color = "#ff0000";
+    }
+  } else {
+    snake.pop();
+  }
 
   snake.unshift(newHead);
 }
@@ -300,8 +287,15 @@ function collision(head, array) {
   return false;
 }
 
-window.onload = function() {
-  showContent('jatek');
+function gameOver(msg) {
+    clearInterval(gameInterval);
+    alert(msg + " Score: " + score);
+    document.getElementById("playOverlay").style.display = "flex";
+}
+
+window.onload = () => {
+  // Kezdőképernyő megjelenítése
+  document.getElementById("playOverlay").style.display = "flex";
 };
 </script>
 </body>
