@@ -14,20 +14,30 @@
     background-position: center;
     background-attachment: fixed;
     color: white;
-    overflow: hidden;
+    overflow-x: hidden;
   }
 
-  .topnav { display: flex; background-color: #111; border-bottom: 2px solid #312abd; }
-  .topnav a { padding: 14px 16px; text-decoration: none; color: #aaa; cursor: pointer; transition: 0.3s; }
-  .topnav a.active { color: #fff; text-shadow: 0 0 10px #312abd; }
+  .content { padding: 20px; text-align: center; }
 
-  .content { display: none; padding: 20px; text-align: center; }
-  .content.active { display: block; }
+  /* Táblázat stílusa */
+  #scoreboard-table {
+    margin: 10px auto;
+    border-collapse: collapse;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid #312abd;
+    width: 280px;
+    font-size: 14px;
+  }
+  #scoreboard-table th, #scoreboard-table td {
+    padding: 5px;
+    border: 1px solid #312abd;
+  }
+  #scoreboard-table th { background: #111; color: #00ffcc; }
 
   #game-wrapper {
     position: relative;
     width: 320px;
-    margin: 40px auto;
+    margin: 20px auto;
     box-shadow: 0 0 30px rgba(49, 42, 189, 0.4);
   }
 
@@ -35,7 +45,6 @@
     border: 3px solid #312abd;
     background-color: #090a0f;
     display: block;
-    box-shadow: 0 0 20px rgba(49, 42, 189, 0.5);
   }
 
   #playOverlay {
@@ -68,10 +77,10 @@
   .btn-extreme { border-color: #f44336; color: #f44336; }
 
   .mobile-controls {
-    margin-top: 20px;
+    margin-top: 15px;
     display: grid;
     grid-template-columns: repeat(3, 65px);
-    gap: 15px;
+    gap: 10px;
     justify-content: center;
   }
 
@@ -84,29 +93,38 @@
     border-radius: 50%;
   }
 
-  .level-indicator {
-    font-weight: bold;
-    margin-top: 5px;
-    color: #00ffcc;
-  }
+  .level-indicator { font-weight: bold; margin-top: 5px; color: #00ffcc; }
 </style>
 </head>
 <body>
 
-<div id="jatek" class="content active">
-  <h2 id="gameTitle" style="text-shadow: 0 0 15px #312abd;">CACA SNAKE</h2>
+<div id="jatek" class="content">
+  <h2 id="gameTitle" style="text-shadow: 0 0 15px #312abd; margin: 5px;">CACA SNAKE</h2>
   <div class="level-indicator" id="levelText">Download the app</div>
-  <div style="font-size: 20px; margin: 10px; color: #04AA6D;">
+
+  <div style="font-size: 22px; margin: 10px; color: #04AA6D; font-weight: bold;">
     Score: <span id="scoreVal">0</span>
   </div>
+
+  <!-- Ranglista Táblázat -->
+  <table id="scoreboard-table">
+    <thead>
+        <tr><th>MÓD</th><th>NÉV</th><th>REKORD</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>Easy</td><td id="rec-easy-name">-</td><td id="rec-easy-score">0</td></tr>
+        <tr><td>Hard</td><td id="rec-hard-name">-</td><td id="rec-hard-score">0</td></tr>
+        <tr><td>Extreme</td><td id="rec-extreme-name">-</td><td id="rec-extreme-score">0</td></tr>
+    </tbody>
+  </table>
 
   <div id="game-wrapper">
     <canvas id="snake-canvas" width="320" height="320"></canvas>
     <div id="playOverlay">
       <h3>CHOOSE A LEVEL!</h3>
-      <button class="play-btn btn-easy" onclick="startGameNow(200)">EASY</button>
-      <button class="play-btn btn-hard" onclick="startGameNow(100)">HARD</button>
-      <button class="play-btn btn-extreme" onclick="startGameNow(60)">EXTREME</button>
+      <button class="play-btn btn-easy" onclick="startGameNow(200, 'easy')">EASY</button>
+      <button class="play-btn btn-hard" onclick="startGameNow(100, 'hard')">HARD</button>
+      <button class="play-btn btn-extreme" onclick="startGameNow(60, 'extreme')">EXTREME</button>
     </div>
   </div>
 
@@ -119,6 +137,7 @@
 </div>
 
 <script>
+const domain = "https://marcell.qzz.io";
 let audioCtx;
 const canvas = document.getElementById("snake-canvas");
 const ctx = canvas.getContext("2d");
@@ -126,25 +145,13 @@ const box = 16;
 
 let snake, food, d, score, gameInterval;
 let currentSpeed = 180;
+let aktualisMod = "easy";
 let currentLevel = 1;
-let robot = { x: -100, y: -100 }; // Kezdetben a pályán kívül
+let robot = { x: -100, y: -100 };
 
-function playEatSound() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  osc.type = "square";
-  osc.frequency.value = 850;
-  gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-  osc.start();
-  osc.stop(audioCtx.currentTime + 0.08);
-}
-
-function startGameNow(speed) {
+function startGameNow(speed, mod) {
   currentSpeed = speed;
+  aktualisMod = mod;
   document.getElementById("playOverlay").style.display = "none";
   initSnake();
 }
@@ -158,7 +165,6 @@ function initSnake() {
   robot = { x: -100, y: -100 };
   document.getElementById("scoreVal").innerText = score;
   document.getElementById("levelText").innerText = "LEVEL 1: NEON CITY";
-  document.getElementById("levelText").style.color = "#00ffcc";
   spawnFood();
   gameInterval = setInterval(draw, currentSpeed);
 }
@@ -168,6 +174,13 @@ function spawnFood() {
     x: Math.floor(Math.random() * 19) * box,
     y: Math.floor(Math.random() * 19) * box
   };
+}
+
+function collision(head, array) {
+  for(let i = 0; i < array.length; i++) {
+    if(head.x == array[i].x && head.y == array[i].y) return true;
+  }
+  return false;
 }
 
 document.addEventListener("keydown", e => {
@@ -185,61 +198,32 @@ function setDir(dir) {
 }
 
 function draw() {
-  // Pálya törlése és háttér stílus szint szerint
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  if (currentLevel === 2) {
-    ctx.fillStyle = "rgba(50, 0, 0, 0.4)"; // Vöröses "riasztás" háttér
-  } else {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
-  }
+  ctx.fillStyle = currentLevel === 2 ? "rgba(50, 0, 0, 0.4)" : "rgba(0, 0, 0, 0.3)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Robot kezelése (Csak Level 2-ben)
   if (currentLevel === 2) {
-    // Robot AI: az alma felé megy
     if (robot.x < food.x) robot.x += box;
     else if (robot.x > food.x) robot.x -= box;
     else if (robot.y < food.y) robot.y += box;
     else if (robot.y > food.y) robot.y -= box;
-
-    // Robot rajzolása
     ctx.fillStyle = "#ff0000";
-    ctx.shadowBlur = 15;
-    ctx.shadowColor = "#ff0000";
     ctx.fillRect(robot.x + 1, robot.y + 1, box - 2, box - 2);
-    ctx.fillStyle = "white";
-    ctx.fillRect(robot.x + 4, robot.y + 4, 2, 2); // Szemek
-    ctx.fillRect(robot.x + 10, robot.y + 4, 2, 2);
-    ctx.shadowBlur = 0;
-
-    // Ha a robot eszi meg az almát
-    if (robot.x === food.x && robot.y === food.y) {
-        spawnFood();
-    }
+    if (robot.x === food.x && robot.y === food.y) spawnFood();
   }
 
-  // Kígyó rajzolása
   for(let i = 0; i < snake.length; i++) {
-    const isHead = (i === 0);
-    ctx.fillStyle = isHead ? "#00ffcc" : "#0088ff";
-    ctx.shadowBlur = 15;
-    ctx.shadowColor = isHead ? "#00ffcc" : "#0088ff";
+    ctx.fillStyle = (i === 0) ? "#00ffcc" : "#0088ff";
     ctx.fillRect(snake[i].x + 1, snake[i].y + 1, box - 2, box - 2);
   }
 
-  // Étel rajzolása
   ctx.fillStyle = "#ff0055";
-  ctx.shadowBlur = 20;
-  ctx.shadowColor = "#ff0055";
   ctx.beginPath();
   ctx.arc(food.x + box/2, food.y + box/2, box/2 - 2, 0, Math.PI * 2);
   ctx.fill();
-  ctx.shadowBlur = 0;
 
   let snakeX = snake[0].x;
   let snakeY = snake[0].y;
-
   if(d == "LEFT") snakeX -= box;
   if(d == "UP") snakeY -= box;
   if(d == "RIGHT") snakeX += box;
@@ -247,56 +231,62 @@ function draw() {
 
   let newHead = { x: snakeX, y: snakeY };
 
-  // Ütközés falakkal vagy saját testtel
   if(snakeX < 0 || snakeX >= canvas.width || snakeY < 0 || snakeY >= canvas.height || collision(newHead, snake)) {
-    gameOver("GAME OVER!");
+    clearInterval(gameInterval);
+    jatekVege(aktualisMod, score);
+    document.getElementById("playOverlay").style.display = "flex";
     return;
   }
 
-  // Ütközés a robottal
-  if (currentLevel === 2 && snakeX === robot.x && snakeY === robot.y) {
-    gameOver("THE ROBOT IS CAUGHT!");
-    return;
-  }
-
-  // Étel megevése
   if(snakeX == food.x && snakeY == food.y) {
     score++;
     document.getElementById("scoreVal").innerText = score;
-    playEatSound();
     spawnFood();
-
-    // SZINTVÁLTÁS 10 pontnál
     if (score === 13 && currentLevel === 1) {
         currentLevel = 2;
         robot.x = 0; robot.y = 0;
-        document.getElementById("levelText").innerText = "Watch out, the robot is coming!";
-        document.getElementById("levelText").style.color = "#ff0000";
+        document.getElementById("levelText").innerText = "LEVEL 2: ROBOT ATTACK";
     }
   } else {
     snake.pop();
   }
-
   snake.unshift(newHead);
 }
 
-function collision(head, array) {
-  for(let i = 0; i < array.length; i++) {
-    if(head.x == array[i].x && head.y == array[i].y) return true;
-  }
-  return false;
+// --- BACKEND LOGIKA ---
+
+async function frissitRanglistat() {
+    try {
+        const res = await fetch(`${domain}/rekord.json`, { cache: "no-store" });
+        const rekordok = await res.json();
+        document.getElementById('rec-easy-name').innerText = rekordok.easy.name;
+        document.getElementById('rec-easy-score').innerText = rekordok.easy.score;
+        document.getElementById('rec-hard-name').innerText = rekordok.hard.name;
+        document.getElementById('rec-hard-score').innerText = rekordok.hard.score;
+        document.getElementById('rec-extreme-name').innerText = rekordok.extreme.name;
+        document.getElementById('rec-extreme-score').innerText = rekordok.extreme.score;
+        return rekordok;
+    } catch (e) { console.log("Hiba a ranglista betöltésekor."); }
 }
 
-function gameOver(msg) {
-    clearInterval(gameInterval);
-    alert(msg + " Score: " + score);
-    document.getElementById("playOverlay").style.display = "flex";
+async function jatekVege(mod, elertPont) {
+    const rekordok = await frissitRanglistat();
+    if (rekordok && elertPont > rekordok[mod].score) {
+        const nev = prompt("GRATULÁLUNK, ÚJ REKORD! Neved (max 20 betű):");
+        if (nev) {
+            await fetch(`${domain}/api/update-score`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mode: mod, score: elertPont, name: nev.substring(0, 20) })
+            });
+            frissitRanglistat();
+        }
+    } else {
+        alert("GAME OVER! Pontszám: " + elertPont);
+    }
 }
 
-window.onload = () => {
-  // Kezdőképernyő megjelenítése
-  document.getElementById("playOverlay").style.display = "flex";
-};
+window.addEventListener('load', frissitRanglistat);
 </script>
 </body>
 </html>
