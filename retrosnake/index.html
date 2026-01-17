@@ -257,7 +257,8 @@ function draw() {
 
 async function frissitRanglistat() {
     try {
-        const res = await fetch(`${domain}/rekord.json`, { cache: "no-store" });
+        // Időbélyeg (timestamp) hozzáadása a URL-hez, hogy elkerüljük a cache-elést
+        const res = await fetch(`${domain}/rekord.json?t=${new Date().getTime()}`, { cache: "no-store" });
         const rekordok = await res.json();
         document.getElementById('rec-easy-name').innerText = rekordok.easy.name;
         document.getElementById('rec-easy-score').innerText = rekordok.easy.score;
@@ -266,27 +267,47 @@ async function frissitRanglistat() {
         document.getElementById('rec-extreme-name').innerText = rekordok.extreme.name;
         document.getElementById('rec-extreme-score').innerText = rekordok.extreme.score;
         return rekordok;
-    } catch (e) { console.log("Hiba a ranglista betöltésekor."); }
+    } catch (e) { 
+        console.log("Hiba a ranglista betöltésekor."); 
+    }
 }
 
 async function jatekVege(mod, elertPont) {
+    // 1. Friss adatok lekérése ellenőrzés előtt
     const rekordok = await frissitRanglistat();
+    
     if (rekordok && elertPont > rekordok[mod].score) {
         const nev = prompt("GRATULÁLUNK, ÚJ REKORD! Neved (max 20 betű):");
         if (nev) {
-            await fetch(`${domain}/api/update-score`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ mode: mod, score: elertPont, name: nev.substring(0, 20) })
-            });
-            frissitRanglistat();
+            try {
+                const response = await fetch(`${domain}/api/update-score`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        mode: mod, 
+                        score: elertPont, 
+                        name: nev.substring(0, 20) 
+                    })
+                });
+                
+                if (response.ok) {
+                    // 2. Késleltetett frissítés (500ms), hogy a szerver biztosan végezzen az írással
+                    setTimeout(() => {
+                        frissitRanglistat();
+                    }, 500);
+                }
+            } catch (err) {
+                console.error("Hálózati hiba a mentés során.");
+            }
         }
     } else {
         alert("GAME OVER! Pontszám: " + elertPont);
     }
 }
 
+// Kezdő betöltés
 window.addEventListener('load', frissitRanglistat);
+
 </script>
 </body>
 </html>
