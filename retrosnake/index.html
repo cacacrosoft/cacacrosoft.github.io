@@ -139,6 +139,30 @@
 <script>
 const domain = "https://marcell.qzz.io";
 let audioCtx;
+
+// 🔊 ALMA EVÉS HANG
+function playEatSound() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+
+  osc.type = "square";
+  osc.frequency.value = 850;
+
+  gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  osc.start();
+  osc.stop(audioCtx.currentTime + 0.08);
+}
+
+
 const canvas = document.getElementById("snake-canvas");
 const ctx = canvas.getContext("2d");
 const box = 16;
@@ -240,6 +264,8 @@ function draw() {
 
   if(snakeX == food.x && snakeY == food.y) {
     score++;
+    playEatSound();
+playEatSound();
     document.getElementById("scoreVal").innerText = score;
     spawnFood();
     if (score === 13 && currentLevel === 1) {
