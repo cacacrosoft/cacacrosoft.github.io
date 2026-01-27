@@ -175,6 +175,31 @@
     }
 }
 
+.seat-map {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 10px;
+  max-width: 500px;
+  margin: 20px auto;
+}
+
+.seat {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #4caf50;
+  border-radius: 6px 6px 2px 2px;
+  cursor: pointer;
+}
+
+.seat.occupied {
+  background: #f44336;
+  cursor: not-allowed;
+}
+
+.seat:hover:not(.occupied) {
+  background: #66ff66;
+}
+
 </style>
 </head>
 <body>
@@ -230,8 +255,16 @@
 </div>
 
 <div id="mozi" class="content">
+  <button onclick="openClearMoziModal()"
+style="padding:10px 20px; background:#f44336; color:white; border:none; border-radius:6px; font-size:16px; margin-top:15px;">
+🗑 Mozi kiürítése (admin)
+</button>
+
   <h2>Mozi - Vásároljon jegyet online!</h2>
-  <p>//...</p>
+  <p>...</p>
+  <h2>Válassz helyet</h2>
+<div id="seatMap" class="seat-map"></div>
+
 </div>
 
 <div id="moziModal" class="modal">
@@ -244,6 +277,20 @@
     <p id="moziError" style="color:red;"></p>
   </div>
 </div>
+
+<div id="clearMoziModal" class="modal">
+  <div class="modal-content">
+    <h2>Admin kód</h2>
+    <input type="password" id="clearMoziCode"
+           placeholder="Add meg az admin kódot"
+           onkeydown="if(event.key==='Enter') checkClearMoziCode()">
+    <br><br>
+    <button onclick="checkClearMoziCode()">Törlés</button>
+    <button onclick="closeClearMozi()">Mégse</button>
+    <p id="clearMoziError" style="color:red;"></p>
+  </div>
+</div>
+
 
 <div id="test" class="content">
   <img src="https://raw.githubusercontent.com/cacacrosoft/cacacrosoft.github.io/main/Slide2.jpg" style="width:200px;">
@@ -306,6 +353,12 @@
 const TEST_CODE="caca123";
 const MOZI_CODE="caca123";
 const serverUrl="https://marcell.qzz.io/";
+
+function sendReservation(name, seat) {
+  window.location.href =
+    `mailto:tettamantimarcell@gmail.com?subject=Mozi foglalás&body=Név: ${name}%0ASzék: ${seat}`;
+}
+
 
 function showContent(sectionId){
   document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
@@ -475,6 +528,72 @@ function gameOver() {
     document.getElementById("playOverlay").style.display = "flex"; // Visszahozzuk a gombot
 }
 
+
+const rows = 2;
+const cols = 6;
+const seatMap = document.getElementById("seatMap");
+
+function loadSeats() {
+  seatMap.innerHTML = "";
+  for (let i = 1; i <= rows * cols; i++) {
+    const seat = document.createElement("div");
+    seat.className = "seat";
+
+    if (localStorage.getItem("seat_" + i)) {
+      seat.classList.add("occupied");
+    }
+
+    seat.onclick = () => selectSeat(i, seat);
+    seatMap.appendChild(seat);
+  }
+}
+
+function selectSeat(seatNumber, seatElement) {
+  if (seatElement.classList.contains("occupied")) return;
+
+  const name = prompt("Add meg a neved:");
+  if (!name) return;
+
+  localStorage.setItem("seat_" + seatNumber, name);
+  seatElement.classList.add("occupied");
+
+  sendReservation(name, seatNumber);
+}
+
+loadSeats();
+
+
+const CLEAR_MOZI_CODE = "admin_mozi"; // 🔐 ADMIN KÓD
+
+function openClearMoziModal() {
+  document.getElementById("clearMoziModal").style.display = "block";
+  setTimeout(() => document.getElementById("clearMoziCode").focus(), 100);
+}
+
+function closeClearMozi() {
+  document.getElementById("clearMoziModal").style.display = "none";
+  document.getElementById("clearMoziCode").value = "";
+  document.getElementById("clearMoziError").innerText = "";
+}
+
+function checkClearMoziCode() {
+  const input = document.getElementById("clearMoziCode").value;
+
+  if (input !== CLEAR_MOZI_CODE) {
+    document.getElementById("clearMoziError").innerText = "Hibás kód!";
+    return;
+  }
+
+  if (!confirm("Biztosan kiüríted a mozit?")) return;
+
+  for (let i = 1; i <= rows * cols; i++) {
+    localStorage.removeItem("seat_" + i);
+  }
+
+  loadSeats();
+  closeClearMozi();
+  alert("🎉 A mozi sikeresen kiürítve!");
+}
 
 
 </script>
