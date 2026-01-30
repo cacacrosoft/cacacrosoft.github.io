@@ -7,6 +7,10 @@
 
 <style>
   body {
+
+
+
+
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
     background-image: url('Caca.png');
@@ -200,9 +204,34 @@
   background: #66ff66;
 }
 
+
+#loadingOverlay {
+  position: fixed;
+  inset: 0;
+  background: black;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+
+#loadingOverlay video {
+  width: 300px;
+  height: auto;
+}
+
+
 </style>
 </head>
 <body>
+
+<div id="loadingOverlay">
+  <video autoplay muted loop>
+    <source src="LOADING_VIDEO.mp4" type="video/mp4">
+    A böngésződ nem támogatja a videót.
+  </video>
+</div>
+
 
 <div class="topnav">
   <a onclick="showContent('learazasok')" id="learazasokLink" class="active">Főoldal</a>
@@ -394,16 +423,22 @@ function openMoziProtected(){
 }
 function closeMozi(){document.getElementById("moziModal").style.display="none"; document.getElementById("moziCode").value=""; document.getElementById("moziError").innerText="";}
 function checkMoziCode(){const input=document.getElementById("moziCode").value; if(input===MOZI_CODE){closeMozi(); showContent('mozi');} else document.getElementById("moziError").innerText="Hibás kód!";}
-
 async function loadFilesFromServer() {
+
+  showLoading(); // 👈 ITT JELENIK MEG A LOADING VIDEÓ
+
   const listElement = document.getElementById("dynamicFileList");
   listElement.innerHTML = "Betöltés...";
+
   const baseUrl = serverUrl.endsWith('/') ? serverUrl : serverUrl + '/';
+
   try {
     const response = await fetch(baseUrl, { mode: 'cors' });
     if (!response.ok) throw new Error('Hálózati hiba');
+
     const files = await response.json();
     listElement.innerHTML = "";
+
     let count = 0;
     files.forEach(file => {
       const fileName = file.name;
@@ -418,11 +453,20 @@ async function loadFilesFromServer() {
         count++;
       }
     });
-    if (count === 0) listElement.innerHTML = "Nem találhatók fájlok.";
+
+    if (count === 0) {
+      listElement.innerHTML = "Nem találhatók fájlok.";
+    }
+
   } catch (e) {
     listElement.innerHTML = `<p>Szerverhiba.</p>`;
+  } finally {
+
+    hideLoading(); // 👈 ITT TŰNIK EL (DE NEM ÁLL LE A VIDEÓ)
+
   }
 }
+
 
 function filterFiles(){
   let input=document.getElementById("searchInput").value.toLowerCase();
@@ -594,6 +638,15 @@ function checkClearMoziCode() {
   loadSeats();
   closeClearMozi();
   alert("🎉 A mozi sikeresen kiürítve!");
+}
+
+
+function showLoading() {
+  document.getElementById("loadingOverlay").style.display = "flex";
+}
+
+function hideLoading() {
+  document.getElementById("loadingOverlay").style.display = "none";
 }
 
 
