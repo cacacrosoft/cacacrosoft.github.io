@@ -245,6 +245,9 @@
     <div id="menu5r" class="menu5r">
       <button onclick="openTestProtected()">▶️ 5.r toube</button>
       <button onclick="openMoziProtected()">🎬 Mozi</button>
+         <button onclick="openStudiModal(1)">📘 Study 5.R</button>
+
+
     </div>
   </div>
 </div>
@@ -335,6 +338,8 @@ style="padding:10px 20px; background:#f44336; color:white; border:none; border-r
 
 
 
+
+
 <div id="testModal" class="modal">
   <div class="modal-content">
     <h2>Kód szükséges</h2>
@@ -379,14 +384,78 @@ style="padding:10px 20px; background:#f44336; color:white; border:none; border-r
 </div>
 
 
+
+<div id="studiContent1" class="content">
+  <h2>📘 Study</h2>
+  <p>Üdvözli a study!</p>
+
+  <!-- IDE tesszük a házi feladat űrlapot -->
+  <form id="homeworkForm">
+    Név: <input type="text" id="name" required><br><br>
+    Házi szöveg: <textarea id="text" required></textarea><br><br>
+    Tanári kód: <input type="password" id="code" required><br><br>
+    <button type="submit">Beküldés</button>
+  </form>
+
+  <p id="message" style="color:red;"></p>
+
+  <!-- Lista a beküldött háziknak -->
+  <ul id="submittedHomeworks"></ul>
+</div>
+
+
+
+ <div id="studiModal1" class="modal">
+  <div class="modal-content">
+    <h2>Kód szükséges </h2>
+    <input type="password" id="studiCode1" placeholder="Írd ide!"
+onkeydown="if(event.key==='Enter') checkStudiCode(1)">
+
+    <br><br>
+    <button onclick="checkStudiCode(1)">Belépés</button>
+    <button onclick="closeStudi(1)">Mégse</button>
+    <p id="studiError1" style="color:red;"></p>
+  </div>
+</div>
+
 <script>
 const TEST_CODE="caca123";
 const MOZI_CODE="caca123";
+
 const serverUrl="https://marcell.qzz.io/";
 
 function sendReservation(name, seat) {
   window.location.href =
     `mailto:tettamantimarcell@gmail.com?subject=Mozi foglalás&body=Név: ${name}%0ASzék: ${seat}`;
+}
+ const STUDI_CODES = [
+  "caca120",  // Study 1
+  "kod2",  // Study 2
+  "kod3",  // Study 3
+  "kod4",  // Study 4
+  "kod5"   // Study 5
+];
+
+
+function openStudiModal(num) {
+  document.getElementById("studiModal"+num).style.display = "block";
+  setTimeout(()=>document.getElementById("studiCode"+num).focus(),100);
+}
+
+function closeStudi(num) {
+  document.getElementById("studiModal"+num).style.display="none";
+  document.getElementById("studiCode"+num).value="";
+  document.getElementById("studiError"+num).innerText="";
+}
+
+function checkStudiCode(num) {
+  const input = document.getElementById("studiCode"+num).value;
+  if(input === STUDI_CODES[num-1]) {
+    closeStudi(num);
+    showContent("studiContent"+num); // a content div megnyílik
+  } else {
+    document.getElementById("studiError"+num).innerText="Hibás kód!";
+  }
 }
 
 
@@ -648,6 +717,37 @@ function showLoading() {
 function hideLoading() {
   document.getElementById("loadingOverlay").style.display = "none";
 }
+
+ const TANARI_KOD = "TANAR2026";
+
+document.getElementById("homeworkForm").addEventListener("submit", function(e){
+  e.preventDefault(); // ne frissüljön az oldal
+
+  const name = document.getElementById("name").value;
+  const text = document.getElementById("text").value;
+  const code = document.getElementById("code").value;
+
+  if(code === TANARI_KOD){
+    document.getElementById("message").style.color = "green";
+    document.getElementById("message").innerText = "Sikeres beküldés!";
+
+    const ul = document.getElementById("submittedHomeworks");
+    const li = document.createElement("li");
+    li.innerHTML = `<strong>${name}:</strong> ${text}`;
+    ul.appendChild(li);
+
+    // Megnyitjuk a study részt
+    showContent("studiContent1");
+
+    // Űrlap törlése
+    document.getElementById("homeworkForm").reset();
+
+  } else {
+    document.getElementById("message").style.color = "red";
+    document.getElementById("message").innerText = "Hibás kód! Nem engedélyezett.";
+  }
+});
+
 
 
 </script>
