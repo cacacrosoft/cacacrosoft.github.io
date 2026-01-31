@@ -131,9 +131,9 @@
   <a onclick="showContent('jatek'); initSnake();" id="jatekLink">Snake</a>
 
   <div class="dropdown-container">
-    <a onclick="toggle5rMenu()" id="otrLink">5.r ▾</a>
+    <a onclick="toggle5rMenu()" id="otrLink">5.R ▾</a>
     <div id="menu5r" class="menu5r">
-      <button onclick="openTestProtected()">▶️ 5.r Tube</button>
+      <button onclick="openTestProtected()">▶️ 5.R Tube</button>
       <button onclick="openMoziProtected()">🎬 Mozi</button>
       <button onclick="openStudiModal(1)">👨‍🏫 Teacher 5.R</button>
       <button onclick="openStudentModal()">🎓 Student 5.R</button>
@@ -141,9 +141,9 @@
   </div>
 
   <div class="dropdown-container">
-    <a onclick="toggle5aMenu()" id="otaLink">5.a ▾</a>
+    <a onclick="toggle5aMenu()" id="otaLink">5.A ▾</a>
     <div id="menu5a" class="menu5r">
-      <button onclick="openTestProtected()">▶️ 5.a Tube</button>
+      <button onclick="openTestProtected5a()">▶️ 5.A Tube</button>
       <button onclick="openStudiModal5a()">👨‍🏫 Teacher 5.A</button>
       <button onclick="openStudentModal5a()">🎓 Student 5.A</button>
     </div>
@@ -173,7 +173,7 @@
 </div>
 
 <div id="test" class="content">
-  <h2>Tube</h2>
+  <h2 id="tubeTitle">Tube</h2>
   <img src="Slide2.jpg" width="300">
   <input type="text" id="searchInput" placeholder="Keresés..." onkeyup="filterFiles()" style="padding:10px; border-radius:5px; width:200px;">
   <div id="dynamicFileList" style="margin-top:20px;"></div>
@@ -229,18 +229,17 @@
   <ul id="studentHomeworksList5a"></ul>
 </div>
 
-<div id="testModal" class="modal"><div class="modal-content"><h2>Tube kód</h2><input type="password" id="testCode" onkeydown="if(event.key==='Enter') checkTestCode()"><br><button onclick="checkTestCode()">Belépés</button><button onclick="closeTest()">Mégse</button><p id="testError" style="color:red;"></p></div></div>
+<div id="testModal" class="modal"><div class="modal-content"><h2>Tube kód (5.R)</h2><input type="password" id="testCode" onkeydown="if(event.key==='Enter') checkTestCode()"><br><button onclick="checkTestCode()">Belépés</button><button onclick="closeTest()">Mégse</button><p id="testError" style="color:red;"></p></div></div>
+<div id="testModal5a" class="modal"><div class="modal-content"><h2>Tube kód (5.A)</h2><input type="password" id="testCode5a" onkeydown="if(event.key==='Enter') checkTestCode5a()"><br><button onclick="checkTestCode5a()">Belépés</button><button onclick="closeTest5a()">Mégse</button><p id="testError5a" style="color:red;"></p></div></div>
 <div id="moziModal" class="modal"><div class="modal-content"><h2>Mozi kód</h2><input type="password" id="moziCode" onkeydown="if(event.key==='Enter') checkMoziCode()"><br><button onclick="checkMoziCode()">Belépés</button><button onclick="closeMozi()">Mégse</button><p id="moziError" style="color:red;"></p></div></div>
 <div id="clearMoziModal" class="modal"><div class="modal-content"><h2>Admin</h2><input type="password" id="clearMoziCode" onkeydown="if(event.key==='Enter') checkClearMoziCode()"><br><button onclick="checkClearMoziCode()">Törlés</button><button onclick="closeClearMozi()">Mégse</button></div></div>
-
 <div id="studiModal1" class="modal"><div class="modal-content"><h2>Tanári kód (5.R)</h2><input type="password" id="studiCode1" onkeydown="if(event.key==='Enter') checkStudiCode(1)"><br><button onclick="checkStudiCode(1)">Belépés</button><button onclick="closeStudi(1)">Mégse</button><p id="studiError1" style="color:red;"></p></div></div>
 <div id="studentModal" class="modal"><div class="modal-content"><h2>Diák kód (5.R)</h2><input type="password" id="studentCode" onkeydown="if(event.key==='Enter') checkStudentCode()"><br><button onclick="checkStudentCode()">Belépés</button><button onclick="closeStudentModal()">Mégse</button><p id="studentError" style="color:red;"></p></div></div>
-
 <div id="studiModal5a" class="modal"><div class="modal-content"><h2>Tanári kód (5.A)</h2><input type="password" id="studiCode5a" onkeydown="if(event.key==='Enter') checkStudiCode5a()"><br><button onclick="checkStudiCode5a()">Belépés</button><button onclick="closeStudi5a()">Mégse</button><p id="studiError5a" style="color:red;"></p></div></div>
 <div id="studentModal5a" class="modal"><div class="modal-content"><h2>Diák kód (5.A)</h2><input type="password" id="studentCode5a" onkeydown="if(event.key==='Enter') checkStudentCode5a()"><br><button onclick="checkStudentCode5a()">Belépés</button><button onclick="closeStudentModal5a()">Mégse</button><p id="studentError5a" style="color:red;"></p></div></div>
 
 <script>
-const TEST_CODE = "caca123", MOZI_CODE = "caca123", TANAR_CODE = "TANAR2026", CLEAR_MOZI_CODE = "admin_mozi", STUDENT_CODE = "caca123";
+const TEST_CODE = "caca123", MOZI_CODE = "caca123", TANAR_CODE = "TANAR2026", CLEAR_MOZI_CODE = "admin_mozi", STUDENT_CODE = "caca123", STUDENT_CODE5A = "caca456";
 const serverUrl = "https://marcell.qzz.io/";
 
 function showContent(id) {
@@ -249,54 +248,58 @@ function showContent(id) {
   const target = document.getElementById(id);
   if(target) target.classList.add('active');
   if(document.getElementById(id+'Link')) document.getElementById(id+'Link').classList.add('active');
-
   document.getElementById("menu5r").style.display = "none";
   document.getElementById("menu5a").style.display = "none";
-
   if(id === 'studiContent1' || id === 'studentContent') loadHomeworks();
   if(id === 'studiContent5a' || id === 'studentContent5a') loadHomeworks5a();
 }
 
-function toggle5rMenu() {
-  document.getElementById("menu5a").style.display = "none";
-  const m = document.getElementById("menu5r");
-  m.style.display = (m.style.display === "block") ? "none" : "block";
-}
+function toggle5rMenu() { document.getElementById("menu5a").style.display = "none"; const m = document.getElementById("menu5r"); m.style.display = (m.style.display === "block") ? "none" : "block"; }
+function toggle5aMenu() { document.getElementById("menu5r").style.display = "none"; const m = document.getElementById("menu5a"); m.style.display = (m.style.display === "block") ? "none" : "block"; }
 
-function toggle5aMenu() {
-  document.getElementById("menu5r").style.display = "none";
-  const m = document.getElementById("menu5a");
-  m.style.display = (m.style.display === "block") ? "none" : "block";
-}
-
-// ALAP FUNKCIÓK (Tube, Mozi)
+// TUBE LOGIKA - 5.R
 function openTestProtected() { document.getElementById("testModal").style.display="block"; }
 function closeTest() { document.getElementById("testModal").style.display="none"; }
-function checkTestCode() { if(document.getElementById("testCode").value === TEST_CODE) { closeTest(); showContent('test'); loadFilesFromServer(); } else document.getElementById("testError").innerText="Hibás!"; }
+function checkTestCode() { 
+  if(document.getElementById("testCode").value === TEST_CODE) { 
+    closeTest(); 
+    document.getElementById("tubeTitle").innerText = "5.R Tube"; 
+    showContent('test'); 
+    loadFilesFromServer(''); 
+  } else document.getElementById("testError").innerText="Hibás!"; 
+}
 
-function openMoziProtected() { document.getElementById("moziModal").style.display="block"; }
-function closeMozi() { document.getElementById("moziModal").style.display="none"; }
-function checkMoziCode() { if(document.getElementById("moziCode").value === MOZI_CODE) { closeMozi(); showContent('mozi'); } else document.getElementById("moziError").innerText="Hibás!"; }
+// TUBE LOGIKA - 5.A
+function openTestProtected5a() { document.getElementById("testModal5a").style.display="block"; }
+function closeTest5a() { document.getElementById("testModal5a").style.display="none"; }
+function checkTestCode5a() { 
+  if(document.getElementById("testCode5a").value === STUDENT_CODE5A) { 
+    closeTest5a(); 
+    document.getElementById("tubeTitle").innerText = "5.A Tube"; 
+    showContent('test'); 
+    loadFilesFromServer('5a'); 
+  } else document.getElementById("testError5a").innerText="Hibás!"; 
+}
 
-// 5.R LOGIKA
-function openStudiModal(n) { document.getElementById("studiModal1").style.display="block"; }
-function closeStudi(n) { document.getElementById("studiModal1").style.display="none"; }
-function checkStudiCode(n) { if(document.getElementById("studiCode1").value === TANAR_CODE) { closeStudi(1); showContent('studiContent1'); } else document.getElementById("studiError1").innerText="Hibás!"; }
+// FÁJLOK LISTÁZÁSA (Mappa paraméterrel)
+async function loadFilesFromServer(folder) {
+  showLoading();
+  try {
+    const res = await fetch(`${serverUrl}?folder=${folder}`);
+    const files = await res.json();
+    const list = document.getElementById("dynamicFileList");
+    list.innerHTML = "";
+    
+    const prefix = folder ? folder + '/' : '';
+    files.forEach(f => { 
+      if(f.name.endsWith('.mp4')) {
+        list.innerHTML += `<a href="${serverUrl}${prefix}${f.name}" class="file-item" target="_blank" style="display:block; color:#0f0; margin-bottom:10px; text-decoration:none;">▶️ ${f.name}</a>`; 
+      }
+    });
+  } catch(e) { console.error(e); } finally { hideLoading(); }
+}
 
-function openStudentModal() { document.getElementById("studentModal").style.display="block"; }
-function closeStudentModal() { document.getElementById("studentModal").style.display="none"; }
-function checkStudentCode() { if(document.getElementById("studentCode").value === STUDENT_CODE) { closeStudentModal(); showContent('studentContent'); } else document.getElementById("studentError").innerText="Hibás!"; }
-
-// 5.A LOGIKA
-function openStudiModal5a() { document.getElementById("studiModal5a").style.display="block"; }
-function closeStudi5a() { document.getElementById("studiModal5a").style.display="none"; }
-function checkStudiCode5a() { if(document.getElementById("studiCode5a").value === TANAR_CODE) { closeStudi5a(); showContent('studiContent5a'); } else document.getElementById("studiError5a").innerText="Hibás!"; }
-
-function openStudentModal5a() { document.getElementById("studentModal5a").style.display="block"; }
-function closeStudentModal5a() { document.getElementById("studentModal5a").style.display="none"; }
-function checkStudentCode5a() { if(document.getElementById("studentCode5a").value === STUDENT_CODE) { closeStudentModal5a(); showContent('studentContent5a'); } else document.getElementById("studentError5a").innerText="Hibás!"; }
-
-// ADATKEZELÉS (Betöltések)
+// HÁZI FELADATOK BETÖLTÉSE
 async function loadHomeworks() {
   try {
     const res = await fetch(serverUrl + 'hazifeladatok.json?t=' + Date.now());
@@ -321,7 +324,7 @@ async function loadHomeworks5a() {
   } catch(e) {}
 }
 
-// MENTÉS ESEMÉNYEK
+// ESEMÉNYKEZELŐK
 document.getElementById("homeworkForm").addEventListener("submit", function(e) {
   e.preventDefault();
   const data = { tantargy: document.getElementById("subject").value, szoveg: document.getElementById("text").value, date: new Date().toLocaleString('hu-HU') };
@@ -334,21 +337,28 @@ document.getElementById("homeworkForm5a").addEventListener("submit", function(e)
   fetch(serverUrl + 'save-hazi-5a', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) }).then(() => { loadHomeworks5a(); this.reset(); });
 });
 
-// MARADÉK (Tube listázás, Snake, Mozi - változatlanul)
-async function loadFilesFromServer() {
-  showLoading();
-  try {
-    const res = await fetch(serverUrl);
-    const files = await res.json();
-    const list = document.getElementById("dynamicFileList");
-    list.innerHTML = "";
-    files.forEach(f => { if(f.name.endsWith('.mp4')) list.innerHTML += `<a href="${serverUrl}${f.name}" class="file-item" target="_blank" style="display:block; color:#0f0; margin-bottom:10px;">▶️ ${f.name}</a>`; });
-  } catch(e) {} finally { hideLoading(); }
-}
 function filterFiles() {
   let val = document.getElementById("searchInput").value.toLowerCase();
   document.querySelectorAll(".file-item").forEach(i => i.style.display = i.innerText.toLowerCase().includes(val) ? "block" : "none");
 }
+
+// MOZI ÉS EGYÉB FUNKCIÓK (Változatlan kód)
+function openMoziProtected() { document.getElementById("moziModal").style.display="block"; }
+function closeMozi() { document.getElementById("moziModal").style.display="none"; }
+function checkMoziCode() { if(document.getElementById("moziCode").value === MOZI_CODE) { closeMozi(); showContent('mozi'); } else document.getElementById("moziError").innerText="Hibás!"; }
+function openStudiModal(n) { document.getElementById("studiModal1").style.display="block"; }
+function closeStudi(n) { document.getElementById("studiModal1").style.display="none"; }
+function checkStudiCode(n) { if(document.getElementById("studiCode1").value === TANAR_CODE) { closeStudi(1); showContent('studiContent1'); } else document.getElementById("studiError1").innerText="Hibás!"; }
+function openStudentModal() { document.getElementById("studentModal").style.display="block"; }
+function closeStudentModal() { document.getElementById("studentModal").style.display="none"; }
+function checkStudentCode() { if(document.getElementById("studentCode").value === STUDENT_CODE) { closeStudentModal(); showContent('studentContent'); } else document.getElementById("studentError").innerText="Hibás!"; }
+function openStudiModal5a() { document.getElementById("studiModal5a").style.display="block"; }
+function closeStudi5a() { document.getElementById("studiModal5a").style.display="none"; }
+function checkStudiCode5a() { if(document.getElementById("studiCode5a").value === TANAR_CODE) { closeStudi5a(); showContent('studiContent5a'); } else document.getElementById("studiError5a").innerText="Hibás!"; }
+function openStudentModal5a() { document.getElementById("studentModal5a").style.display="block"; }
+function closeStudentModal5a() { document.getElementById("studentModal5a").style.display="none"; }
+function checkStudentCode5a() { if(document.getElementById("studentCode5a").value === STUDENT_CODE5A) { closeStudentModal5a(); showContent('studentContent5a'); } else document.getElementById("studentError5a").innerText="Hibás!"; }
+
 function loadSeats() {
   const map = document.getElementById("seatMap"); map.innerHTML = "";
   for(let i=1; i<=12; i++) {
