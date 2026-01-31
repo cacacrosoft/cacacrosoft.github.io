@@ -10,6 +10,7 @@
 
 
 
+
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
     background-image: url('Caca.png');
@@ -241,13 +242,13 @@
 
   <div class="dropdown-container">
     <a onclick="toggle5rMenu()" id="otrLink">5.r ▾</a>
-	
+
     <div id="menu5r" class="menu5r">
       <button onclick="openTestProtected()">▶️ 5.r toube</button>
       <button onclick="openMoziProtected()">🎬 Mozi</button>
       <button onclick="openStudiModal(1)">👨‍🏫 Teacher 5.R</button>
     </div>
-	
+
   </div>
 </div>
 
@@ -511,13 +512,15 @@ async function loadFilesFromServer() {
     let count = 0;
     files.forEach(file => {
       const fileName = file.name;
-      if (!fileName.startsWith('.')) {
+      // Csak akkor jelenítjük meg, ha mp4-re végződik ÉS nem ponttal kezdődik (rejtett fájlok)
+      if (!fileName.startsWith('.') && fileName.toLowerCase().endsWith('.mp4')) {
         const fullUrl = baseUrl + fileName;
         const a = document.createElement('a');
         a.href = fullUrl;
         a.className = 'file-item';
         a.target = '_blank';
-        a.innerText = (file.type === 'directory' ? '📁 ' : '▶️ ') + fileName;
+        // Mivel csak videók vannak, a mappa ikont el is hagyhatjuk, vagy maradhat a lejátszás jel
+        a.innerText = '▶️ ' + fileName;
         listElement.appendChild(a);
         count++;
       }
@@ -722,7 +725,7 @@ function hideLoading() {
 
 
 document.getElementById("homeworkForm").addEventListener("submit", function(e){
-  e.preventDefault(); 
+  e.preventDefault();
 
   const subject = document.getElementById("subject").value;
   const text = document.getElementById("text").value;
@@ -748,7 +751,7 @@ document.getElementById("homeworkForm").addEventListener("submit", function(e){
       if(data.trim() === "Siker") {
           messageEl.style.color = "green";
           messageEl.innerText = "Sikeres beküldés!";
-          
+
           const ul = document.getElementById("submittedHomeworks");
           const li = document.createElement("li");
           li.innerHTML = `<strong>${subject}:</strong> ${text}`;
