@@ -136,6 +136,7 @@
       <button onclick="openTestProtected()">▶️ 5.r Tube</button>
       <button onclick="openMoziProtected()">🎬 Mozi</button>
       <button onclick="openStudiModal(1)">👨‍🏫 Teacher 5.R</button>
+	  <button onclick="openStudentModal()">🎓 Student 5.R</button>  
     </div>
   </div>
 </div>
@@ -198,13 +199,20 @@
   <ul id="submittedHomeworks"></ul>
 </div>
 
+<div id="studentContent" class="content">
+  <h2>🎓 Student 5.R - Házi feladatok</h2>
+  <h3>Beküldött feladatok:</h3>
+  <ul id="studentHomeworksList"></ul>
+</div>
+
+<div id="studentModal" class="modal"><div class="modal-content"><h2>Diák kód</h2><input type="password" id="studentCode" onkeydown="if(event.key==='Enter') checkStudentCode()"><br><button onclick="checkStudentCode()">Belépés</button><button onclick="closeStudentModal()">Mégse</button><p id="studentError" style="color:red;"></p></div></div>
 <div id="testModal" class="modal"><div class="modal-content"><h2>Tube kód</h2><input type="password" id="testCode" onkeydown="if(event.key==='Enter') checkTestCode()"><br><button onclick="checkTestCode()">Belépés</button><button onclick="closeTest()">Mégse</button><p id="testError" style="color:red;"></p></div></div>
 <div id="moziModal" class="modal"><div class="modal-content"><h2>Mozi kód</h2><input type="password" id="moziCode" onkeydown="if(event.key==='Enter') checkMoziCode()"><br><button onclick="checkMoziCode()">Belépés</button><button onclick="closeMozi()">Mégse</button><p id="moziError" style="color:red;"></p></div></div>
 <div id="studiModal1" class="modal"><div class="modal-content"><h2>Tanári kód</h2><input type="password" id="studiCode1" onkeydown="if(event.key==='Enter') checkStudiCode(1)"><br><button onclick="checkStudiCode(1)">Belépés</button><button onclick="closeStudi(1)">Mégse</button><p id="studiError1" style="color:red;"></p></div></div>
 <div id="clearMoziModal" class="modal"><div class="modal-content"><h2>Admin</h2><input type="password" id="clearMoziCode" onkeydown="if(event.key==='Enter') checkClearMoziCode()"><br><button onclick="checkClearMoziCode()">Törlés</button><button onclick="closeClearMozi()">Mégse</button></div></div>
 
 <script>
-const TEST_CODE = "caca123", MOZI_CODE = "caca123", TANAR_CODE = "TANAR2026", CLEAR_MOZI_CODE = "admin_mozi";
+const TEST_CODE = "caca123", MOZI_CODE = "caca123", TANAR_CODE = "TANAR2026", CLEAR_MOZI_CODE = "admin_mozi", STUDENT_CODE = "caca123";
 const serverUrl = "https://marcell.qzz.io/";
 
 function showContent(id) {
@@ -307,6 +315,38 @@ function draw() {
 
 function showLoading() { document.getElementById("loadingOverlay").style.display="flex"; }
 function hideLoading() { document.getElementById("loadingOverlay").style.display="none"; }
+
+
+// Student HF 
+// Modal nyitása/zárása
+function openStudentModal() { document.getElementById("studentModal").style.display="block"; }
+function closeStudentModal() { document.getElementById("studentModal").style.display="none"; }
+
+// Jelszó ellenőrzés
+function checkStudentCode() {
+    if(document.getElementById("studentCode").value === STUDENT_CODE) {
+        closeStudentModal();
+        showContent('studentContent'); // Ez vált a nézetre
+        loadHomeworksForStudents();    // Ez tölti be a listát
+    } else {
+        document.getElementById("studentError").innerText = "Hibás!";
+    }
+}
+
+// Speciális betöltő a diákoknak (ugyanazt a fájlt olvassa, de máshova írja ki)
+async function loadHomeworksForStudents() {
+    try {
+        const res = await fetch(serverUrl + 'hazifeladatok.json?t=' + Date.now());
+        if(res.ok) {
+            const h = await res.json();
+            // A diákoknál a "studentHomeworksList" ID-jú listába rakjuk
+            document.getElementById("studentHomeworksList").innerHTML = h.map(i => `<li style="margin-bottom:8px;">[${i.date}] <b>${i.subject}</b>: ${i.text}</li>`).join('');
+        }
+    } catch(e) { console.log("Hiba a betöltésnél."); }
+}
+
+
+
 </script>
 </body>
 </html>
