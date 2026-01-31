@@ -242,13 +242,13 @@
 
   <div class="dropdown-container">
     <a onclick="toggle5rMenu()" id="otrLink">5.r ▾</a>
+	
     <div id="menu5r" class="menu5r">
       <button onclick="openTestProtected()">▶️ 5.r toube</button>
       <button onclick="openMoziProtected()">🎬 Mozi</button>
-         <button onclick="openStudiModal(1)">📘 Study 5.R</button>
-
-
+      <button onclick="openStudiModal(1)">👨‍🏫 Teacher 5.R</button>
     </div>
+	
   </div>
 </div>
 
@@ -386,20 +386,20 @@ style="padding:10px 20px; background:#f44336; color:white; border:none; border-r
 
 
 <div id="studiContent1" class="content">
-  <h2>📘 Study</h2>
-  <p>Üdvözli a study!</p>
+  <h2>👨‍🏫 Teacher 5.R - Házi feladatok</h2>
+  <p>Írd be a tantárgyat és a feladatot!</p>
 
   <!-- IDE tesszük a házi feladat űrlapot -->
-  <form id="homeworkForm">
-    Név: <input type="text" id="name" required><br><br>
+<form id="homeworkForm">
+    Tantárgy: <input type="text" id="subject" placeholder="Pl.: Matek, Töri..." required><br><br>
     Házi szöveg: <textarea id="text" required></textarea><br><br>
-    Tanári kód: <input type="password" id="code" required><br><br>
     <button type="submit">Beküldés</button>
   </form>
 
   <p id="message" style="color:red;"></p>
 
   <!-- Lista a beküldött háziknak -->
+  <h3>Beküldött feladatok:</h3>
   <ul id="submittedHomeworks"></ul>
 </div>
 
@@ -421,6 +421,7 @@ onkeydown="if(event.key==='Enter') checkStudiCode(1)">
 <script>
 const TEST_CODE="caca123";
 const MOZI_CODE="caca123";
+
 
 const serverUrl="https://marcell.qzz.io/";
 
@@ -720,32 +721,51 @@ function hideLoading() {
 
  const TANARI_KOD = "TANAR2026";
 
+
 document.getElementById("homeworkForm").addEventListener("submit", function(e){
-  e.preventDefault(); // ne frissüljön az oldal
+  e.preventDefault(); 
 
-  const name = document.getElementById("name").value;
+  const subject = document.getElementById("subject").value;
   const text = document.getElementById("text").value;
-  const code = document.getElementById("code").value;
+  const messageEl = document.getElementById("message");
 
-  if(code === TANARI_KOD){
-    document.getElementById("message").style.color = "green";
-    document.getElementById("message").innerText = "Sikeres beküldés!";
+  let formData = new FormData();
+  formData.append('tantargy', subject);
+  formData.append('szoveg', text);
 
-    const ul = document.getElementById("submittedHomeworks");
-    const li = document.createElement("li");
-    li.innerHTML = `<strong>${name}:</strong> ${text}`;
-    ul.appendChild(li);
+  // A te HTTPS alapú címed használata:
+  const targetUrl = serverUrl.endsWith('/') ? serverUrl + 'mentes_hazi.php' : serverUrl + '/mentes_hazi.php';
 
-    // Megnyitjuk a study részt
-    showContent("studiContent1");
+  fetch(targetUrl, {
+      method: 'POST',
+      //mode: 'cors', // Ez kell a különböző domainek közötti küldéshez
+      body: formData
+  })
+  .then(response => {
+      if (!response.ok) throw new Error('Hiba: ' + response.status);
+      return response.text();
+  })
+  .then(data => {
+      if(data.trim() === "Siker") {
+          messageEl.style.color = "green";
+          messageEl.innerText = "Sikeres beküldés!";
+          
+          const ul = document.getElementById("submittedHomeworks");
+          const li = document.createElement("li");
+          li.innerHTML = `<strong>${subject}:</strong> ${text}`;
+          ul.insertBefore(li, ul.firstChild);
 
-    // Űrlap törlése
-    document.getElementById("homeworkForm").reset();
-
-  } else {
-    document.getElementById("message").style.color = "red";
-    document.getElementById("message").innerText = "Hibás kód! Nem engedélyezett.";
-  }
+          document.getElementById("homeworkForm").reset();
+      } else {
+          messageEl.style.color = "red";
+          messageEl.innerText = "Szerver üzenet: " + data;
+      }
+  })
+  .catch(error => {
+      console.error('Hiba:', error);
+      messageEl.style.color = "red";
+      messageEl.innerText = "Hiba történt: " + error.message;
+  });
 });
 
 
