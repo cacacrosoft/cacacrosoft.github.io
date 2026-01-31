@@ -721,8 +721,6 @@ function hideLoading() {
   document.getElementById("loadingOverlay").style.display = "none";
 }
 
- const TANARI_KOD = "TANAR2026";
-
 
 document.getElementById("homeworkForm").addEventListener("submit", function(e){
   e.preventDefault();
@@ -731,44 +729,59 @@ document.getElementById("homeworkForm").addEventListener("submit", function(e){
   const text = document.getElementById("text").value;
   const messageEl = document.getElementById("message");
 
-  let formData = new FormData();
-  formData.append('tantargy', subject);
-  formData.append('szoveg', text);
+  const data = {
+    tantargy: subject,
+    szoveg: text,
+    date: new Date().toLocaleString('hu-HU')
+  };
 
-  // A te HTTPS alapú címed használata:
-  const targetUrl = serverUrl.endsWith('/') ? serverUrl + 'mentes_hazi.php' : serverUrl + '/mentes_hazi.php';
+  const targetUrl = serverUrl.endsWith('/') ? serverUrl + 'save-hazi' : serverUrl + '/save-hazi';
 
-  fetch(targetUrl, {
+
+  fetch(targetUrl, { // Cseréld le a Raspberry IP címére!
       method: 'POST',
-      //mode: 'cors', // Ez kell a különböző domainek közötti küldéshez
-      body: formData
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
   })
-  .then(response => {
-      if (!response.ok) throw new Error('Hiba: ' + response.status);
-      return response.text();
-  })
-  .then(data => {
-      if(data.trim() === "Siker") {
+  .then(response => response.json())
+  .then(result => {
+      if(result.status === "success") {
           messageEl.style.color = "green";
-          messageEl.innerText = "Sikeres beküldés!";
-
-          const ul = document.getElementById("submittedHomeworks");
-          const li = document.createElement("li");
-          li.innerHTML = `<strong>${subject}:</strong> ${text}`;
-          ul.insertBefore(li, ul.firstChild);
-
-          document.getElementById("homeworkForm").reset();
+          messageEl.innerText = "Sikeresen mentve a szerverre!";
+          loadHomeworks(); // Frissítjük a listát
+          this.reset();
       } else {
-          messageEl.style.color = "red";
-          messageEl.innerText = "Szerver üzenet: " + data;
+          messageEl.innerText = "Hiba: " + result.message;
       }
   })
   .catch(error => {
-      console.error('Hiba:', error);
       messageEl.style.color = "red";
-      messageEl.innerText = "Hiba történt: " + error.message;
+      messageEl.innerText = "Hiba: " + error.message;
   });
 });
+
+// Ez pedig beolvassa a JSON fájlt a megjelenítéshez
+async function loadHomeworks() {
+    try {
+        const response = await fetch(serverUrl + 'hazifeladatok.json?t=' + new Date().getTime());
+        if (response.ok) {
+            const hazik = await response.json();
+            const ul = document.getElementById("submittedHomeworks");
+            ul.innerHTML = hazik.map(h =>
+                `<li><strong>[${h.date}] ${h.subject}:</strong> ${h.text}</li>`
+            ).join('');
+        }
+    } catch (e) {
+        console.log("Még nincs mentett házi.");
+    }
+}
+
+// Hívd meg az oldal betöltésekor is
+loadHomeworks();
+ const TANARI_KOD = "TANAR2026";
+
+
+
 
 
 
