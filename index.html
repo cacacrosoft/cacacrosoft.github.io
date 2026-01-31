@@ -260,73 +260,46 @@ function toggle5aMenu() { document.getElementById("menu5r").style.display = "non
 // TUBE LOGIKA - 5.R
 function openTestProtected() { document.getElementById("testModal").style.display="block"; }
 function closeTest() { document.getElementById("testModal").style.display="none"; }
-function checkTestCode() { 
-  if(document.getElementById("testCode").value === TEST_CODE) { 
-    closeTest(); 
-    document.getElementById("tubeTitle").innerText = "5.R Tube"; 
-    showContent('test'); 
-    loadFilesFromServer(''); 
-  } else document.getElementById("testError").innerText="Hibás!"; 
+function checkTestCode() {
+  if(document.getElementById("testCode").value === TEST_CODE) {
+    closeTest();
+    document.getElementById("tubeTitle").innerText = "5.R Tube";
+    showContent('test');
+    loadFilesFromServer('');
+  } else document.getElementById("testError").innerText="Hibás!";
 }
 
 // TUBE LOGIKA - 5.A
 function openTestProtected5a() { document.getElementById("testModal5a").style.display="block"; }
 function closeTest5a() { document.getElementById("testModal5a").style.display="none"; }
-function checkTestCode5a() { 
-  if(document.getElementById("testCode5a").value === STUDENT_CODE5A) { 
-    closeTest5a(); 
-    document.getElementById("tubeTitle").innerText = "5.A Tube"; 
-    showContent('test'); 
-    loadFilesFromServer('5a'); 
-  } else document.getElementById("testError5a").innerText="Hibás!"; 
+function checkTestCode5a() {
+  if(document.getElementById("testCode5a").value === STUDENT_CODE5A) {
+    closeTest5a();
+    document.getElementById("tubeTitle").innerText = "5.A Tube";
+    showContent('test');
+    loadFilesFromServer('5a');
+  } else document.getElementById("testError5a").innerText="Hibás!";
 }
 
 // FÁJLOK LISTÁZÁSA (Mappa paraméterrel)
 async function loadFilesFromServer(folder) {
   showLoading();
-  const list = document.getElementById("dynamicFileList");
-  
   try {
-    // Relatív útvonalat használunk, mert a böngészőben a https://marcell.qzz.io/api/... már bizonyítottan működik
-    const response = await fetch("/api/get-videos?folder=" + folder);
-    
-    if (!response.ok) {
-        throw new Error("Szerver hiba: " + response.status);
-    }
-
-    const files = await response.json();
+    const res = await fetch(`${serverUrl}?folder=${folder}`);
+    const files = await res.json();
+    const list = document.getElementById("dynamicFileList");
     list.innerHTML = "";
-    
-    if (!files || files.length === 0) {
-      list.innerHTML = "<p style='color:orange;'>Nincsenek videók ebben a mappában.</p>";
-      return;
-    }
 
-    // A linkek előtagja: ha 5a, akkor az 5a/ mappából szolgálja ki az Nginx
-    const pathPrefix = (folder === '5a') ? "5a/" : "";
-    
+    const prefix = folder ? folder + '/' : '';
     files.forEach(f => {
-      // Itt rakjuk össze a végleges linket a videóhoz
-      const videoUrl = "/" + pathPrefix + f.name;
-      
-      list.innerHTML += `
-        <a href="${videoUrl}" class="file-item" target="_blank" 
-           style="display:block; color:#0f0; margin-bottom:12px; text-decoration:none; font-size:18px; border-left: 3px solid #0f0; padding-left: 10px;">
-           ▶️ ${f.name}
-        </a>`;
+      if(f.name.endsWith('.mp4')) {
+        list.innerHTML += `<a href="${serverUrl}${prefix}${f.name}" class="file-item" target="_blank" style="display:block; color:#0f0; margin-bottom:10px; text-decoration:none;">▶️ ${f.name}</a>`;
+      }
     });
-
-    console.log("Sikeresen betöltve " + files.length + " videó (" + folder + ")");
-
-  } catch (error) {
-    console.error("Hiba történt:", error);
-    list.innerHTML = "<p style='color:red;'>Hiba történt a betöltéskor! (Részletek a konzolban)</p>";
-  } finally {
-    hideLoading();
-  }
+  } catch(e) { console.error(e); } finally { hideLoading(); }
 }
 
-  // HÁZI FELADATOK BETÖLTÉSE
+// HÁZI FELADATOK BETÖLTÉSE
 async function loadHomeworks() {
   try {
     const res = await fetch(serverUrl + 'hazifeladatok.json?t=' + Date.now());
