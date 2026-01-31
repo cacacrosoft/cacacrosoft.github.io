@@ -285,20 +285,35 @@ function checkTestCode5a() {
 async function loadFilesFromServer(folder) {
   showLoading();
   try {
-    const res = await fetch(`${serverUrl}?folder=${folder}`);
+    // 1. A lekérésnél HASZNÁLJUK az /api/ előtagot, mert a böngészőben is így működött!
+    const res = await fetch(`${serverUrl}api/get-videos?folder=${folder}`);
     const files = await res.json();
+    
     const list = document.getElementById("dynamicFileList");
     list.innerHTML = "";
 
-    const prefix = folder ? folder + '/' : '';
+    // 2. A linkeknél (href) viszont NEM kell az api/, mert a videók a főmappában vannak
+    const pathPrefix = folder ? folder + '/' : '';
+
     files.forEach(f => {
       if(f.name.endsWith('.mp4')) {
-        list.innerHTML += `<a href="${serverUrl}${prefix}${f.name}" class="file-item" target="_blank" style="display:block; color:#0f0; margin-bottom:10px; text-decoration:none;">▶️ ${f.name}</a>`;
+        // Így a link pl.: https://marcell.qzz.io/5a/video.mp4 lesz
+        list.innerHTML += `<a href="${serverUrl}${pathPrefix}${f.name}" class="file-item" target="_blank" style="display:block; color:#0f0; margin-bottom:10px; text-decoration:none; font-size:18px;">▶️ ${f.name}</a>`;
       }
     });
-  } catch(e) { console.error(e); } finally { hideLoading(); }
-}
 
+    if(files.length === 0) list.innerHTML = "<p>Nincsenek videók ebben a mappában.</p>";
+
+  } catch(e) { 
+    console.error("Hiba:", e); 
+    document.getElementById("dynamicFileList").innerHTML = "Hiba a betöltéskor.";
+  } finally { 
+    hideLoading(); 
+  }
+}
+  
+  
+  
 // HÁZI FELADATOK BETÖLTÉSE
 async function loadHomeworks() {
   try {
