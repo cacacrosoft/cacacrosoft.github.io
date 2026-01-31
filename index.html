@@ -284,22 +284,49 @@ function checkTestCode5a() {
 // FÁJLOK LISTÁZÁSA (Mappa paraméterrel)
 async function loadFilesFromServer(folder) {
   showLoading();
+  const list = document.getElementById("dynamicFileList");
+  
   try {
-    const res = await fetch(`${serverUrl}?folder=${folder}`);
-    const files = await res.json();
-    const list = document.getElementById("dynamicFileList");
+    // Relatív útvonalat használunk, mert a böngészőben a https://marcell.qzz.io/api/... már bizonyítottan működik
+    const response = await fetch("/api/get-videos?folder=" + folder);
+    
+    if (!response.ok) {
+        throw new Error("Szerver hiba: " + response.status);
+    }
+
+    const files = await response.json();
     list.innerHTML = "";
     
-    const prefix = folder ? folder + '/' : '';
-    files.forEach(f => { 
-      if(f.name.endsWith('.mp4')) {
-        list.innerHTML += `<a href="${serverUrl}${prefix}${f.name}" class="file-item" target="_blank" style="display:block; color:#0f0; margin-bottom:10px; text-decoration:none;">▶️ ${f.name}</a>`; 
-      }
+    if (!files || files.length === 0) {
+      list.innerHTML = "<p style='color:orange;'>Nincsenek videók ebben a mappában.</p>";
+      return;
+    }
+
+    // A linkek előtagja: ha 5a, akkor az 5a/ mappából szolgálja ki az Nginx
+    const pathPrefix = (folder === '5a') ? "5a/" : "";
+    
+    files.forEach(f => {
+      // Itt rakjuk össze a végleges linket a videóhoz
+      const videoUrl = "/" + pathPrefix + f.name;
+      
+      list.innerHTML += `
+        <a href="${videoUrl}" class="file-item" target="_blank" 
+           style="display:block; color:#0f0; margin-bottom:12px; text-decoration:none; font-size:18px; border-left: 3px solid #0f0; padding-left: 10px;">
+           ▶️ ${f.name}
+        </a>`;
     });
-  } catch(e) { console.error(e); } finally { hideLoading(); }
+
+    console.log("Sikeresen betöltve " + files.length + " videó (" + folder + ")");
+
+  } catch (error) {
+    console.error("Hiba történt:", error);
+    list.innerHTML = "<p style='color:red;'>Hiba történt a betöltéskor! (Részletek a konzolban)</p>";
+  } finally {
+    hideLoading();
+  }
 }
 
-// HÁZI FELADATOK BETÖLTÉSE
+  // HÁZI FELADATOK BETÖLTÉSE
 async function loadHomeworks() {
   try {
     const res = await fetch(serverUrl + 'hazifeladatok.json?t=' + Date.now());
