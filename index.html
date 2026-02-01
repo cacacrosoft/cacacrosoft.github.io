@@ -113,6 +113,77 @@
   .seat { width: 100%; aspect-ratio: 1/1; background: #4caf50; border-radius: 6px 6px 2px 2px; cursor: pointer; }
   .seat.occupied { background: #f44336; cursor: not-allowed; }
   #loadingOverlay { position: fixed; inset: 0; background: black; display: none; align-items: center; justify-content: center; z-index: 99999; }
+/* 📱 MOBIL NÉZET */
+@media (max-width: 768px) {
+
+  body {
+    background-attachment: scroll; /* mobilon ne laggoljon */
+  }
+
+  /* Felső menü */
+  .topnav {
+    flex-wrap: wrap;
+  }
+
+  .topnav a {
+    font-size: 15px;
+    padding: 12px;
+    flex: 1 1 50%;
+    text-align: center;
+  }
+
+  /* Dropdown menük */
+  .menu5r {
+    position: static;
+    width: 100%;
+    margin-top: 5px;
+  }
+
+  .menu5r button {
+    font-size: 15px;
+    padding: 14px;
+  }
+
+  /* Videók */
+  .video-wrapper {
+    max-width: 100%;
+  }
+
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Képek */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Snake játék */
+  #snake-canvas {
+    width: 100%;
+    height: auto;
+  }
+
+  /* Modal */
+  .modal-content {
+    width: 90%;
+    margin-top: 30%;
+  }
+
+  /* Mozi székek */
+  .seat-map {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* Inputok */
+  input, textarea, button {
+    font-size: 16px; /* iOS zoom fix */
+  }
+}
+
+
 </style>
 </head>
 <body>
