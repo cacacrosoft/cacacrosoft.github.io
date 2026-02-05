@@ -200,6 +200,7 @@
   <a onclick="showContent('vibercsoportok')" id="vibercsoportokLink">Viber</a>
   <a onclick="showContent('cardok')" id="cardokLink">Cardok</a>
   <a onclick="showContent('jatek'); initSnake();" id="jatekLink">Snake</a>
+   <a onclick="showContent('fa')" id="faLink">Fa</a>
 
   <div class="dropdown-container">
     <a onclick="toggle5rMenu()" id="otrLink">5.R ▾</a>
@@ -310,6 +311,24 @@
 <div id="studentModal" class="modal"><div class="modal-content"><h2>Diák kód (5.R)</h2><input type="password" id="studentCode" onkeydown="if(event.key==='Enter') checkStudentCode()"><br><button onclick="checkStudentCode()">Belépés</button><button onclick="closeStudentModal()">Mégse</button><p id="studentError" style="color:red;"></p></div></div>
 <div id="studiModal5a" class="modal"><div class="modal-content"><h2>Tanári kód (5.A)</h2><input type="password" id="studiCode5a" onkeydown="if(event.key==='Enter') checkStudiCode5a()"><br><button onclick="checkStudiCode5a()">Belépés</button><button onclick="closeStudi5a()">Mégse</button><p id="studiError5a" style="color:red;"></p></div></div>
 <div id="studentModal5a" class="modal"><div class="modal-content"><h2>Diák kód (5.A)</h2><input type="password" id="studentCode5a" onkeydown="if(event.key==='Enter') checkStudentCode5a()"><br><button onclick="checkStudentCode5a()">Belépés</button><button onclick="closeStudentModal5a()">Mégse</button><p id="studentError5a" style="color:red;"></p></div></div>
+
+<div id="fa" class="content">
+  <h2>🌳 Fa</h2>
+  <h3>Fa 10 pro vásárlása </h3>
+  <button onclick="showFaForm()" style="padding:12px 20px; background:#04AA6D; color:white; border:none; border-radius:8px; cursor:pointer;">
+    Név megadása
+  </button>
+
+  <div id="faForm" style="display:none; margin-top:20px;">
+    <input type="text" id="faName" placeholder="Írd be a neved"
+      style="padding:10px; width:250px; border-radius:6px; border:none; color:black;"><br><br>
+
+    <button onclick="sendFaMail()" style="padding:10px 20px; background:#312abd; color:white; border:none; border-radius:8px; cursor:pointer;">
+      Küldés
+    </button>
+  </div>
+</div>
+
 
 <script>
 const TEST_CODE = "caca123", MOZI_CODE = "caca123", TANAR_CODE = "TANAR2026", CLEAR_MOZI_CODE = "admin_mozi", STUDENT_CODE = "caca123", STUDENT_CODE5A = "caca456";
@@ -477,6 +496,29 @@ function draw() {
 }
 function showLoading() { document.getElementById("loadingOverlay").style.display="flex"; }
 function hideLoading() { document.getElementById("loadingOverlay").style.display="none"; }
+
+function showFaForm() {
+  document.getElementById("faForm").style.display = "block";
+}
+
+function sendFaMail() {
+  const name = document.getElementById("faName").value.trim();
+  if (!name) {
+    alert("Írd be a neved!");
+    return;
+  }
+
+  const subject = encodeURIComponent("Fa jelentkezés");
+  const body = encodeURIComponent("Név: " + name);
+
+  window.open(
+    `https://mail.google.com/mail/?view=cm&fs=1&to=tettamantimarcell@gmail.com&su=${subject}&body=${body}`,
+    "_blank"
+  );
+}
+
+
+
 </script>
 </body>
 </html>
