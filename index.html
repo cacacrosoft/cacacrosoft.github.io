@@ -233,11 +233,22 @@
   <img src="viber_kép_2026-01-26_19-30-58-438.png" width="250">
   <p>Fenntartó: Stefkó Soma és Tettamanti Marcell <br> Email: tettamantimarcell@gmail.com</p>
 </div>
-
 <div id="vibercsoportok" class="content">
-  <h2>Viber csoport</h2>
-  <a href="https://invite.viber.com/?g2=AQAsPNwakIHg%2BVXE9FrFTDgbD6Hs%2BC5saVTbiIJJx%2BgNaCuY955QP%2BuoN7T9veGx" target="_blank" style="display:inline-block; padding:15px 25px; background:#7360f2; color:white; text-decoration:none; border-radius:8px;">Csatlakozás</a>
+  <h2>📣 Viber csatorna</h2>
+
+  <a href="https://invite.viber.com/?g2=AQAsPNwakIHg%2BVXE9FrFTDgbD6Hs%2BC5saVTbiIJJx%2BgNaCuY955QP%2BuoN7T9veGx"
+     target="_blank"
+     style="display:inline-block; padding:15px 25px; background:#7360f2; color:white; text-decoration:none; border-radius:8px; margin-bottom:20px;">
+     👉 Csatlakozás a csatornához
+  </a>
+
+  <h3 style="margin-top:30px;">📰 Legutóbbi bejegyzések</h3>
+  <div id="viberFeed"
+       style="margin-top:15px; background:rgba(0,0,0,0.6); padding:15px; border-radius:10px;">
+    Betöltés…
+  </div>
 </div>
+
 
 <div id="cardok" class="content">
   <h2>Caca Card kedvezmény!</h2>
@@ -344,6 +355,7 @@ function showContent(id) {
   document.getElementById("menu5a").style.display = "none";
   if(id === 'studiContent1' || id === 'studentContent') loadHomeworks();
   if(id === 'studiContent5a' || id === 'studentContent5a') loadHomeworks5a();
+if(id === 'vibercsoportok') loadViberPosts();
 }
 
 function toggle5rMenu() { document.getElementById("menu5a").style.display = "none"; const m = document.getElementById("menu5r"); m.style.display = (m.style.display === "block") ? "none" : "block"; }
@@ -517,6 +529,25 @@ function sendFaMail() {
   );
 }
 
+async function loadViberPosts() {
+  try {
+    const res = await fetch("viber_posts.json?t=" + Date.now());
+    const posts = await res.json();
+
+    const html = posts.map(p =>
+      `<div style="margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid #555;">
+        <div style="font-size:13px; color:#ccc;">${p.date}</div>
+        <div style="font-size:16px;">${p.text}</div>
+      </div>`
+    ).join("");
+
+    document.getElementById("viberFeed").innerHTML =
+      html || "Nincs még bejegyzés.";
+  } catch (e) {
+    document.getElementById("viberFeed").innerText =
+      "Nem sikerült betölteni.";
+  }
+}
 
 
 </script>
