@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Videó Start + Több Ablak</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: black;
+    }
+
+    video {
+      max-width: 80%;
+      max-height: 60%;
+      border: 4px solid #fff;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    #startBtn {
+      background-color: #28a745;
+      color: white;
+      font-size: 24px;
+      padding: 15px 40px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    #startBtn:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+
+<video id="myVideo" loop>
+  <source src="Windows XP Installation Music.mp4" type="video/mp4">
+</video>
+
+<audio id="myAudio" src="hang3.mp3" loop></audio>
+
+<button id="startBtn">START</button>
+
+
+<script>
+const video = document.getElementById('myVideo');
+const audio = document.getElementById('myAudio');
+const btn = document.getElementById('startBtn');
+
+btn.addEventListener('click', () => {
+    // Videó és hang elindítása
+    video.play();
+    audio.play();
+    video.muted = false;
+    audio.muted = false;
+
+    // Ablakok megnyitása
+    const numWindows = 5;
+    for (let i = 0; i < numWindows; i++) {
+        const newWin = window.open(window.location.href, '_blank', 'width=800,height=600');
+
+        // Várjunk, amíg betöltődik az ablak
+        newWin.onload = () => {
+            // Gyors "ugrálás" minden 10 ms-ban
+            setInterval(() => {
+                const screenW = screen.availWidth;
+                const screenH = screen.availHeight;
+                const w = Math.floor(Math.random() * 400) + 200; // szélesség
+                const h = Math.floor(Math.random() * 300) + 200; // magasság
+                const x = Math.floor(Math.random() * (screenW - w));
+                const y = Math.floor(Math.random() * (screenH - h));
+                newWin.resizeTo(w, h);
+                newWin.moveTo(x, y);
+            }, 100); // 10 ms → nagyon gyors
+        };
+    }
+});
+</script>
+
+
+
+</body>
+</html>
