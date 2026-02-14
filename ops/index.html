@@ -88,11 +88,7 @@ body {
   overflow: hidden;
 }
 
-.wrapper {
-  width: 100%;
-  height: 100%;
-  animation: spin 1.2s linear infinite;
-}
+
 
 @keyframes spin {
   0% { transform: rotate(0deg); }
@@ -165,7 +161,7 @@ setInterval(() => {
   const x = Math.random() * (sw - 340);
   const y = Math.random() * (sh - 200);
   window.moveTo(x, y);
-}, 25);
+}, 80);
 
 // ⏱️ OK NÉLKÜLI SZAPORODÁS
 setInterval(() => {
