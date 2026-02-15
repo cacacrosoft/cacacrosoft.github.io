@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<title>XP Error + Zene</title>
+<style>
+body {
+  margin: 0;
+  background: black;
+  color: white;
+  font-family: Tahoma, Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+button {
+  font-size: 22px;
+  padding: 12px 30px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: #0A246A;
+  color: white;
+}
+button:hover { background: #3A6EA5; }
+</style>
+</head>
+<body>
+
+<button id="startBtn">START</button>
+<audio id="bgMusic" src="sajat_zene.mp3" loop></audio> <!-- ide tedd a saját zenéd fájlnevét -->
+
+<script>
+const startBtn = document.getElementById('startBtn');
+const bgMusic = document.getElementById('bgMusic');
+
+startBtn.addEventListener('click', () => {
+    bgMusic.play(); // 🎵 elindítja a zenét
+    spawnXPError(); // 💥 elindítja az első XP popupot
+});
+
+function spawnXPError() {
+    const w = window.open("", "", "width=340,height=200");
+    if(!w) return;
+
+    w.document.write(`
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body {
+  margin: 0;
+  font-family: Tahoma, Arial, sans-serif;
+  background: #ECE9D8;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+  border: 2px solid #000;
+}
+.titlebar {
+  width: 100%;
+  background: linear-gradient(#0A246A, #3A6EA5);
+  color: white;
+  font-weight: bold;
+  padding: 4px 8px;
+  box-sizing: border-box;
+}
+.content {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  gap: 10px;
+}
+.content img {
+  width: 32px;
+}
+button {
+  margin-top: 20px;
+  padding: 6px 25px;
+  font-size: 14px;
+  cursor: pointer;
+  background: #0A246A;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
+button:hover { background: #3A6EA5; }
+</style>
+</head>
+<body>
+
+<div class="titlebar">Critical Error</div>
+
+<div class="content">
+<img src="https://p1.hiclipart.com/preview/502/6/365/windows-xp-security-security-error-icon-png-icon-thumbnail.jpg" alt="icon">
+<div>
+SYSTEM FAILURE
+<div style="color:red;font-weight:bold">YOU ARE AN IDIOT</div>
+</div>
+</div>
+
+<button onclick="okClick()">OK</button>
+
+<audio id="beep" src="https://www.myinstants.com/media/sounds/windows-xp-error.mp3" autoplay></audio>
+
+<script>
+function okClick() {
+    if(window.opener) {
+        for(let i=0;i<20;i++) {
+            window.opener.spawnXPError();
+        }
+    }
+}
+<\/script>
+
+</body>
+</html>
+    `);
+
+    w.document.close();
+}
+</script>
+
+</body>
+</html>
