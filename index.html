@@ -9,7 +9,7 @@
   body {
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
-background-image: url('https://raw.githubusercontent.com/cacacrosoft/cacacrosoft.github.io/main/pl.png'); 
+background-image: url('https://raw.githubusercontent.com/cacacrosoft/cacacrosoft.github.io/main/pl.png');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -184,6 +184,69 @@ background-image: url('https://raw.githubusercontent.com/cacacrosoft/cacacrosoft
 }
 
 
+/* ===== DESIGNES DROPDOWN FELTUNING ===== */
+.menu5r {
+  animation: dropdownFade 0.25s ease;
+  backdrop-filter: blur(8px);
+}
+
+@keyframes dropdownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.menu5r button {
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.menu5r button:hover {
+  transform: translateX(6px);
+  box-shadow: inset 4px 0 0 #04AA6D;
+}
+
+/* Menü nyitó gomb design */
+.dropdown-container > a {
+  position: relative;
+  font-weight: bold;
+}
+
+.dropdown-container > a::after {
+  content: "";
+  position: absolute;
+  left: 10%;
+  bottom: 6px;
+  width: 80%;
+  height: 2px;
+  background: #04AA6D;
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
+}
+
+.dropdown-container > a:hover::after {
+  transform: scaleX(1);
+}
+
+#emojiPicker span {
+  font-size: 22px;
+  cursor: pointer;
+  padding: 4px;
+  display: inline-block;
+}
+
+#emojiPicker span:hover {
+  background: #444;
+  border-radius: 6px;
+}
+
 </style>
 </head>
 <body>
@@ -217,7 +280,7 @@ background-image: url('https://raw.githubusercontent.com/cacacrosoft/cacacrosoft
     <a onclick="toggle5aMenu()" id="otaLink">privi ▾</a>
     <div id="menu5a" class="menu5r">
       <button onclick="openTestProtected5a()">caca ablak</button>
-    
+
       <button onclick="openStudentModal5a()">ellenörző</button>
     </div>
   </div>
@@ -304,7 +367,31 @@ background-image: url('https://raw.githubusercontent.com/cacacrosoft/cacacrosoft
     Szöveg: <textarea id="text5a" required style="color:black; padding:5px; width:100%; max-width:400px;"></textarea><br><br>
     <button type="submit" style="padding:10px 20px; background:#04AA6D; color:white; border:none; border-radius:5px; cursor:pointer;">Beküldés</button>
   </form>
-  <h3>//...</h3>
+  <div style="margin-top:6px; position:relative;">
+  <button type="button" onclick="toggleEmojiPicker()"
+    style="padding:6px 12px; border-radius:6px; border:none; cursor:pointer;">
+    😀 Emoji
+  </button>
+
+  <div id="emojiPicker"
+       style="
+         display:none;
+         position:absolute;
+         bottom:40px;
+         left:0;
+         width:260px;
+         max-height:200px;
+         overflow-y:auto;
+         background:#222;
+         border-radius:10px;
+         padding:8px;
+         box-shadow:0 10px 30px rgba(0,0,0,.6);
+         z-index:9999;
+       ">
+  </div>
+</div>
+
+  <h3>Csak a caca</h3>
   <ul id="submittedHomeworks5a"></ul>
 </div>
 
@@ -550,7 +637,54 @@ async function loadViberPosts() {
   }
 }
 
+document.querySelectorAll(".menu5r button, .topnav a").forEach(el => {
+  el.addEventListener("click", () => {
+    const s = document.getElementById("clickSound");
+    if(s) { s.currentTime = 0; s.play(); }
+  });
+});
+   const EMOJIS = `
+😀 😃 😄 😁 😆 😅 😂 🤣 😊 😇 🙂
+🙃 😉 😌 😍 🥰 😘 😗 😙 😚
+😋 😛 😝 😜 🤪 🤨 🧐 🤓 😎
+😏 😒 😞 😔 😟 😕 🙁 ☹️
+😣 😖 😫 😩 🥺 😢 😭 😤
+😠 😡 🤬 🤯 😳 🥵 🥶 😱
+🤗 🤔 🫡 🤫 🤭 🫢 🫣
+👍 👎 👊 ✊ 🤝 🙏 👏
+❤️ 🧡 💛 💚 💙 💜 🖤 🤍
+🔥 💯 🎉 🎊 🎈 🚀 ⭐ 🌟
+`.trim().split(/\s+/);
+
+const picker = document.getElementById("emojiPicker");
+const textarea = document.getElementById("text5a");
+
+// feltöltjük a panelt
+EMOJIS.forEach(e => {
+  const s = document.createElement("span");
+  s.textContent = e;
+  s.onclick = () => {
+    textarea.value += e;
+    textarea.focus();
+  };
+  picker.appendChild(s);
+});
+
+function toggleEmojiPicker() {
+  picker.style.display =
+    picker.style.display === "block" ? "none" : "block";
+}
+
+// kattintás máshol → bezár
+document.addEventListener("click", e => {
+  if (!picker.contains(e.target) && e.target.innerText !== "😀 Emoji") {
+    picker.style.display = "none";
+  }
+});
+
 
 </script>
 </body>
+<audio id="clickSound" src="mouse-click-sound.mp3"></audio>
+
 </html>
