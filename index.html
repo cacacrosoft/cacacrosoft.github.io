@@ -392,7 +392,22 @@ background-image: url('https://raw.githubusercontent.com/cacacrosoft/cacacrosoft
        ">
   </div>
 </div>
+<button type="button"
+  onclick="openYoutubeModal()"
+  style="padding:6px 12px; border-radius:6px; border:none; cursor:pointer; margin-top:6px;">
+  📺 YouTube videó küldése
+</button>
 
+<div id="youtubeModal" class="modal">
+  <div class="modal-content">
+    <h2>YouTube videó</h2>
+    <input id="ytLink" placeholder="https://www.youtube.com/watch?v=..."
+      style="width:90%; padding:8px;"><br><br>
+    <button onclick="sendYoutube()">Küldés</button>
+    <button onclick="closeYoutubeModal()">Mégse</button>
+  </div>
+</div>
+  
   <h3>Csak a caca</h3>
   <ul id="submittedHomeworks5a"></ul>
 </div>
@@ -684,7 +699,48 @@ document.addEventListener("click", e => {
   }
 });
 
+function openYoutubeModal() {
+  document.getElementById("youtubeModal").style.display = "block";
+}
 
+function closeYoutubeModal() {
+  document.getElementById("youtubeModal").style.display = "none";
+}
+
+function sendYoutube() {
+  const link = document.getElementById("ytLink").value.trim();
+  if (!link.includes("youtube.com") && !link.includes("youtu.be")) {
+    alert("Nem YouTube link!");
+    return;
+  }
+
+  const videoId = extractYouTubeID(link);
+  if (!videoId) {
+    alert("Nem sikerült felismerni a videót.");
+    return;
+  }
+
+  const li = document.createElement("li");
+  li.innerHTML = `
+    <div style="margin-top:10px;">
+      <iframe width="300" height="170"
+        src="https://www.youtube.com/embed/${videoId}"
+        frameborder="0"
+        allowfullscreen>
+      </iframe>
+    </div>
+  `;
+
+  document.getElementById("submittedHomeworks5a").prepend(li);
+
+  document.getElementById("ytLink").value = "";
+  closeYoutubeModal();
+}
+
+function extractYouTubeID(url) {
+  const m = url.match(/(?:v=|\/)([0-9A-Za-z_-]{11})/);
+  return m ? m[1] : null;
+}
 </script>
 </body>
 <audio id="clickSound" src="mouse-click-sound.mp3"></audio>
