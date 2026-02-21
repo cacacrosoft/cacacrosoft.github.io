@@ -363,7 +363,7 @@ background-image: url('https://raw.githubusercontent.com/cacacrosoft/cacacrosoft
 <div id="studiContent5a" class="content">
 <video autoplay loop muted controls width="640" height="360">
   <source src="i.mp4" type="video/mp4">
-</video> 
+</video>
   <form id="homeworkForm5a">
     Név <input type="text" id="subject5a" required style="color:black; padding:5px;"><br><br>
     Szöveg: <textarea id="text5a" required style="color:black; padding:5px; width:100%; max-width:400px;"></textarea><br><br>
@@ -392,22 +392,35 @@ background-image: url('https://raw.githubusercontent.com/cacacrosoft/cacacrosoft
        ">
   </div>
 </div>
-<button type="button"
-  onclick="openYoutubeModal()"
-  style="padding:6px 12px; border-radius:6px; border:none; cursor:pointer; margin-top:6px;">
-  New! 🆕 <br>  YouTube videó küldése (ez a funkció nem stabil)
-</button>
 
-<div id="youtubeModal" class="modal">
-  <div class="modal-content">
-    <h2>YouTube videó</h2>
-    <input id="ytLink" placeholder="https://www.youtube.com/watch?v=..."
-      style="width:90%; padding:8px;"><br><br>
-    <button onclick="sendYoutube()">Küldés</button>
-    <button onclick="closeYoutubeModal()">Mégse</button>
-  </div>
+<div style="margin-top:10px;">
+  <input type="text" id="youtubeInput" placeholder="YouTube link" style="width:250px; padding:5px;">
+  <button id="addYoutubeBtn" style="padding:5px 10px;">YouTube link hozzáadása</button>
 </div>
-  
+
+<textarea id="text5a" style="width:300px; height:60px; margin-top:10px;"></textarea>
+
+<script>
+document.getElementById('addYoutubeBtn').addEventListener('click', () => {
+  const linkInput = document.getElementById('youtubeInput');
+  const textarea = document.getElementById('text5a');
+  const link = linkInput.value.trim();
+
+  if(!link || !link.includes('youtube.com/watch?v=')) {
+    alert('Adj meg érvényes YouTube linket!');
+    return;
+  }
+
+  // Hozzáfűzzük a textarea-hoz
+  if(textarea.value) textarea.value += '\n'; // új sor, ha van már szöveg
+  textarea.value += link;
+
+  linkInput.value = ''; // input törlése
+  textarea.focus();
+});
+</script>
+
+
   <h3>Csak a caca</h3>
   <ul id="submittedHomeworks5a"></ul>
 </div>
@@ -699,48 +712,58 @@ document.addEventListener("click", e => {
   }
 });
 
-function openYoutubeModal() {
-  document.getElementById("youtubeModal").style.display = "block";
+
+
+
+// Kiegészített linkfelismerő + YouTube embed
+function linkifyAndEmbed(node) {
+  if(!node || !node.innerHTML) return;
+
+  // 1. Először linkké alakítjuk a szöveget
+  node.innerHTML = node.innerHTML.replace(/(https?:\/\/[^\s]+)|(www\.[^\s]+)/g, function(match) {
+    let url = match.startsWith('http') ? match : 'https://' + match;
+    return `<a href="${url}" target="_blank" style="color:#0f0;">${match}</a>`;
+  });
+
+  // 2. YouTube videó beágyazás
+  node.querySelectorAll('a').forEach(a => {
+    const ytMatch = a.href.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+    if(ytMatch) {
+      const videoId = ytMatch[1];
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube.com/embed/${videoId}`;
+      iframe.width = "160";
+      iframe.height = "90";
+      iframe.frameBorder = "0";
+      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+      iframe.allowFullscreen = true;
+      // Helyettesítsük a linket az iframe-el
+      a.parentNode.replaceChild(iframe, a);
+    }
+  });
 }
 
-function closeYoutubeModal() {
-  document.getElementById("youtubeModal").style.display = "none";
-}
+// MutationObserver a dinamikusan jövő tartalmakhoz
+const observerYT = new MutationObserver(mutations => {
+  mutations.forEach(mutation => {
+    mutation.addedNodes.forEach(node => {
+      if(node.nodeType === 1) { // csak elemek
+        if(node.tagName === 'LI' || node.tagName === 'P' || node.tagName === 'DIV') {
+          linkifyAndEmbed(node);
+        }
+        node.querySelectorAll('li, p, div').forEach(el => linkifyAndEmbed(el));
+      }
+    });
+  });
+});
 
-function sendYoutube() {
-  const link = document.getElementById("ytLink").value.trim();
-  if (!link.includes("youtube.com") && !link.includes("youtu.be")) {
-    alert("Nem YouTube link!");
-    return;
-  }
+// Figyeljük a teljes body-t
+observerYT.observe(document.body, { childList: true, subtree: true });
 
-  const videoId = extractYouTubeID(link);
-  if (!videoId) {
-    alert("Nem sikerült felismerni a videót.");
-    return;
-  }
 
-  const li = document.createElement("li");
-  li.innerHTML = `
-    <div style="margin-top:10px;">
-      <iframe width="300" height="170"
-        src="https://www.youtube.com/embed/${videoId}"
-        frameborder="0"
-        allowfullscreen>
-      </iframe>
-    </div>
-  `;
 
-  document.getElementById("submittedHomeworks5a").prepend(li);
 
-  document.getElementById("ytLink").value = "";
-  closeYoutubeModal();
-}
 
-function extractYouTubeID(url) {
-  const m = url.match(/(?:v=|\/)([0-9A-Za-z_-]{11})/);
-  return m ? m[1] : null;
-}
 </script>
 </body>
 <audio id="clickSound" src="mouse-click-sound.mp3"></audio>
