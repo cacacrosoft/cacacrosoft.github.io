@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beni névnapi bulija</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-image: url('15513740.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-color: #333;
+    color: white;
+    text-shadow: 1px 1px 5px black;
+  }
+
+  .topnav {
+    display: flex;
+    background-color: #333;
+    overflow: hidden;
+    z-index: 10;
+    position: relative;
+  }
+
+  .topnav a {
+    padding: 14px 16px;
+    text-decoration: none;
+    color: #f2f2f2;
+    font-size: 17px;
+    cursor: pointer;
+  }
+
+  .topnav a.active { background-color: #F54927; color: white; }
+  .topnav a:hover { background-color: #ddd; color: black; }
+
+  .content {
+    display: none;
+    padding: 20px;
+  }
+  .content.active { display: block; }
+
+  .video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    max-width: 900px;
+    margin-top: 20px;
+  }
+  .video-wrapper video {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  .file-item { display: block; margin-bottom: 5px; color: #00ff00; text-decoration: none; }
+  .file-item:hover { text-decoration: underline; }
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 3000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+  }
+
+  .modal-content {
+    background: white;
+    color: black;
+    padding: 30px;
+    width: 300px;
+    margin: 15% auto;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    position: relative;
+  }
+
+  .modal-content input { padding: 10px; width: 80%; margin-bottom: 10px; border-radius:5px; border:1px solid #ccc; }
+  .modal-content button { padding:10px 20px; margin:5px; border:none; border-radius:5px; background:#F54927; color:white; font-weight:bold; cursor:pointer; }
+
+  @media(max-width:768px){
+    .topnav{flex-direction:column;}
+    .topnav a{font-size:18px; padding:16px;}
+    h2{font-size:22px;}
+  }
+
+  .youtube-section {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.yt-card {
+  background: rgba(0,0,0,0.75);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.yt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.yt-header h2 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.yt-videos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 15px;
+}
+
+.yt-videos iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  border: none;
+}
+
+@media (max-width: 768px) {
+  .yt-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <a onclick="showContent('learazasok')" class="active" id="homeLink">Főoldal</a>
+  <a onclick="showContent('videok')" id="videokLink">Videóink</a>
+  <a onclick="showContent('kapcsolat')" id="kapcsolatLink">Kapcsolat</a>
+</div>
+
+<div id="learazasok" class="content active">
+ <h2>//..</h2>
+</div>
+ <div id="videok" class="content">
+ <h2> Videók </h2>
+
+  <a href="https://www.youtube.com/@TomzandJerriez"
+     target="_blank"
+     style="display:inline-block; padding:15px 25px; background:#F22400; color:white; text-decoration:none; border-radius:8px; margin-bottom:20px;">
+     👉 Csatlakozás a youtube csatornához
+  </a>
+
+ <script src="https://apis.google.com/js/platform.js"></script>
+
+<div class="youtube-section">
+  <div class="yt-card">
+
+    <div class="yt-header">
+      <h2>📺 YouTube csatorna</h2>
+
+
+
+      <!-- Feliratkozás gomb -->
+      <div class="g-ytsubscribe"
+           data-channel="tomzandjerriez"
+           data-layout="full"
+           data-count="default">
+      </div>
+    </div>
+
+    <!-- Automatikus csatorna videók -->
+    <div class="yt-videos">
+      <iframe src="https://www.youtube.com/embed?listType=user_uploads&list=UCXXXXXXXXXXXX"></iframe>
+      <iframe src="https://www.youtube.com/embed?listType=user_uploads&list=UCXXXXXXXXXXXX"></iframe>
+      <iframe src="https://www.youtube.com/embed?listType=user_uploads&list=UCXXXXXXXXXXXX"></iframe>
+      <iframe src="https://www.youtube.com/embed?listType=user_uploads&list=UCXXXXXXXXXXXX"></iframe
+    </div>
+
+  </div>
+</div>
+</div>
+
+<div id="kapcsolat" class="content">
+<h2>Email:  <br> Telfonszám: <br> Facebook: </h2>
+</div>
+
+
+ <script>
+
+function showContent(id) {
+  // Minden content eltüntetése
+  const contents = document.querySelectorAll('.content');
+  contents.forEach(c => c.classList.remove('active'));
+
+  // Aktív menü kiemelés
+  const links = document.querySelectorAll('.topnav a');
+  links.forEach(l => l.classList.remove('active'));
+
+  // Csak a kiválasztott content mutatása
+  document.getElementById(id).classList.add('active');
+
+  // Az adott link aktív jelzése
+  if(id === 'learazasok') document.getElementById('homeLink').classList.add('active');
+  if(id === 'videok') document.getElementById('videokLink').classList.add('active');
+  if(id === 'kapcsolat') document.getElementById('kapcsolatLink').classList.add('active');
+}
+
+
+</script>
+</body>
+</html>
