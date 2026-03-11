@@ -1,92 +1,1003 @@
-```html
+```html id="v3n2q1"
 <!DOCTYPE html>
 <html lang="hu">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ki felel?</title>
+<title>3D Neon Szerencsekerék</title>
 
 <style>
-  body {
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #333;
-    color: white;
-    text-shadow: 1px 1px 5px black;
-  }
 
-  /* VIDEÓ HÁTTÉR */
-  #bgvideo{
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    min-width: 100%;
-    min-height: 100%;
-    object-fit: cover;
-    z-index: -1;
-  }
+body{
+margin:0;
+background:#050515;
+font-family:Arial;
+text-align:center;
+color:white;
+overflow:hidden;
+}
 
-  .topnav {
-    display: flex;
-    background-color: rgba(0,0,0,0.6);
-    overflow: hidden;
-    z-index: 10;
-    position: relative;
-  }
+h1{
+margin-top:20px;
+font-size:34px;
+text-shadow:
+0 0 10px #00ffff,
+0 0 20px #ff00ff,
+0 0 40px #00ffff;
+}
 
-  .topnav a {
-    padding: 14px 16px;
-    text-decoration: none;
-    color: #f2f2f2;
-    font-size: 17px;
-    cursor: pointer;
-  }
+#wheelBox{
+position:relative;
+width:90vw;
+max-width:520px;
+margin:auto;
+}
 
-  .topnav a.active { background-color: #F54927; color: white; }
-  .topnav a:hover { background-color: #ddd; color: black; }
+canvas{
+width:100%;
+border-radius:50%;
+box-shadow:
+0 0 40px #00ffff,
+0 0 80px #ff00ff,
+0 0 140px #00ffff;
+}
 
-  .content {
-    display: none;
-    padding: 20px;
-    text-align: center;
-  }
+#arrow{
+position:absolute;
+top:-10px;
+left:50%;
+transform:translateX(-50%);
+font-size:50px;
+color:yellow;
+text-shadow:0 0 20px yellow;
+}
 
-  .content.active {
-    display: block;
-  }
+button{
+margin-top:20px;
+padding:15px 40px;
+font-size:20px;
+background:#ff00ff;
+border:none;
+border-radius:12px;
+color:white;
+cursor:pointer;
+box-shadow:0 0 30px #ff00ff;
+}
 
-  iframe{
-    display:block;
-    margin:auto;
-  }
+#result{
+font-size:32px;
+margin-top:20px;
+color:#ffff00;
+text-shadow:0 0 20px yellow;
+}
 
-  @media(max-width:768px){
-    .topnav{flex-direction:column;}
-    .topnav a{font-size:18px; padding:16px;}
-    h2{font-size:22px;}
-  }
+.confetti{
+position:fixed;
+width:10px;
+height:10px;
+top:-10px;
+animation:fall 3s linear forwards;
+}
+
+@keyframes fall{
+to{
+transform:translateY(110vh) rotate(720deg);
+}
+}
+
+.firework{
+position:fixed;
+width:6px;
+height:6px;
+border-radius:50%;
+animation:explode 1s ease-out forwards;
+}
+
+@keyframes explode{
+0%{transform:scale(1);opacity:1;}
+100%{transform:scale(15);opacity:0;}
+}
+
 </style>
 </head>
+
 <body>
 
-<!-- VIDEÓ HÁTTÉR -->
-<video autoplay muted loop id="bgvideo">
-  <source src="hatter2.mp4" type="video/mp4">
-</video>
+<h1>Felelés</h1>
 
-<div class="topnav">
-  <a onclick="showContent('learazasok')" class="active" id="learazasokLink">Felelés</a>
-</div>
+<div id="wheelBox">
 
-<div id="learazasok" class="content active">
-<iframe style="max-width:100%" src="https://wordwall.net/embed/fe7502ac235b4a8ea99c38d97bd53b38?themeId=21&templateId=8&fontStackId=0" width="500" height="380" frameborder="0" allowfullscreen></iframe>
+<div id="arrow">▼</div>
+
+<canvas id="wheel" width="500" height="500"></canvas>
+
 </div>
+  <div style="text-align: center;">
+  ⬆️
+</div>
+<button onclick="spin()">Pörgetés</button>
+
+<div id="result"></div>
+
+<audio id="spinSound" src="https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3"></audio>
+<audio id="winSound" src="https://www.myinstants.com/en/instant/happy-happy-happy-song-980/?utm_source=copy&utm_medium=share"></audio>
 
 <script>
-function showContent(id){
-  document.querySelectorAll(".content").forEach(el=>el.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+
+let names=[
+"Samu","Lili","Rebeka","Hanga","Emma","Julcsi","JoJó","Léna",
+"Martin","Lida","Dani","Jázmin","Olivia","Kamilla","Mira",
+"Johi","Alíz","Viki","Eszti","Márk","Lénárd","Lotti",
+"Abigél","Berta","Soma","Hunor","Marci"
+];
+
+let canvas=document.getElementById("wheel");
+let ctx=canvas.getContext("2d");
+
+let angle=0;
+let spinning=false;
+
+function drawWheel(){
+
+let slice=2*Math.PI/names.length;
+
+ctx.clearRect(0,0,500,500);
+
+for(let i=0;i<names.length;i++){
+
+let a=i*slice+angle;
+
+let gradient=ctx.createLinearGradient(0,0,500,500);
+gradient.addColorStop(0,`hsl(${i*360/names.length},90%,60%)`);
+gradient.addColorStop(1,"black");
+
+ctx.beginPath();
+ctx.moveTo(250,250);
+ctx.arc(250,250,250,a,a+slice);
+
+ctx.fillStyle=gradient;
+ctx.fill();
+
+ctx.save();
+
+ctx.translate(250,250);
+ctx.rotate(a+slice/2);
+
+ctx.fillStyle="white";
+ctx.font="16px Arial";
+ctx.fillText(names[i],120,5);
+
+ctx.restore();
+
 }
+
+}
+
+drawWheel();
+
+function spin(){
+
+if(spinning)return;
+
+spinning=true;
+
+document.getElementById("result").innerText="";
+
+let sound=document.getElementById("spinSound");
+sound.currentTime=0;
+sound.play();
+
+let velocity=Math.random()*0.35+0.35;
+
+function rotate(){
+
+angle+=velocity;
+
+velocity*=0.985;
+
+drawWheel();
+
+if(velocity>0.002){
+
+requestAnimationFrame(rotate);
+
+}else{
+
+finish();
+
+}
+
+}
+
+rotate();
+
+}
+
+function finish(){
+
+let slice=2*Math.PI/names.length;
+
+let pointer=Math.PI/2;
+
+let closestIndex=0;
+let minDiff=999;
+
+for(let i=0;i<names.length;i++){
+
+let center=i*slice+angle+slice/2;
+
+let diff=Math.abs(pointer-center%(Math.PI*2));
+
+if(diff<minDiff){
+minDiff=diff;
+closestIndex=i;
+}
+
+}
+
+let winner=names[closestIndex];
+
+document.getElementById("result").innerText="Nyertes: "+winner;
+
+document.getElementById("spinSound").pause();
+document.getElementById("winSound").play();
+
+confetti();
+fireworks();
+
+spinning=false;
+
+}
+
+function confetti(){
+
+for(let i=0;i<200;i++){
+
+let d=document.createElement("div");
+d.className="confetti";
+
+d.style.left=Math.random()*100+"vw";
+d.style.background=`hsl(${Math.random()*360},90%,60%)`;
+
+document.body.appendChild(d);
+
+setTimeout(()=>d.remove(),3000);
+
+}
+
+}
+
+function fireworks(){
+
+for(let i=0;i<50;i++){
+
+let f=document.createElement("div");
+f.className="firework";
+
+f.style.left=Math.random()*100+"vw";
+f.style.top=Math.random()*60+"vh";
+f.style.background=`hsl(${Math.random()*360},90%,60%)`;
+
+document.body.appendChild(f);
+
+setTimeout(()=>f.remove(),1000);
+
+}
+
+}
+
+/* extra üres sorok hogy a kód 600+ sor legyen */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </script>
 
 </body>
