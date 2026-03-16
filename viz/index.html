@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>Hydro</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+body{
+
+margin:0;
+font-family:-apple-system,BlinkMacSystemFont,"SF Pro",sans-serif;
+background:linear-gradient(180deg,#1c1c1e,#000000);
+color:white;
+
+}
+
+.app{
+
+max-width:420px;
+margin:auto;
+padding:20px;
+
+}
+
+.header{
+
+font-size:34px;
+font-weight:700;
+margin-bottom:20px;
+
+}
+
+.card{
+
+background:rgba(255,255,255,0.07);
+backdrop-filter:blur(20px);
+border-radius:22px;
+padding:20px;
+margin-bottom:20px;
+
+}
+
+.bucket{
+
+width:100%;
+height:260px;
+border-radius:20px;
+border:3px solid rgba(255,255,255,0.4);
+position:relative;
+overflow:hidden;
+
+}
+
+.water{
+
+position:absolute;
+bottom:0;
+width:100%;
+background:linear-gradient(#00c6ff,#0072ff);
+transition:1s;
+
+}
+
+.wave{
+
+position:absolute;
+width:200%;
+height:140px;
+top:-60px;
+background:rgba(255,255,255,0.4);
+border-radius:40%;
+animation:wave 5s linear infinite;
+
+}
+
+@keyframes wave{
+
+0%{transform:translateX(0)}
+100%{transform:translateX(-50%)}
+
+}
+
+input{
+
+width:100%;
+padding:16px;
+border:none;
+border-radius:14px;
+font-size:18px;
+margin-top:10px;
+
+}
+
+button{
+
+width:100%;
+padding:18px;
+margin-top:12px;
+border:none;
+border-radius:16px;
+background:#0a84ff;
+color:white;
+font-size:20px;
+
+}
+
+button:active{
+
+transform:scale(0.96);
+
+}
+
+.stat{
+
+font-size:20px;
+margin-top:10px;
+
+}
+
+#permission{
+
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#000;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+z-index:999;
+
+}
+
+#permission button{
+
+width:220px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="permission">
+
+<h2>🔔 Engedélyezd az értesítéseket</h2>
+
+<button onclick="enable()">Engedélyezem</button>
+
+</div>
+
+<div class="app">
+
+<h2> Software by Cacacrosoft. </h2>
+<h2>Egy Szörp Kft.-s pohár 1 dl </h2>
+<div class="header">💧 Hydro</div>
+
+<div class="card">
+
+Testsúly (kg)
+
+<input id="weight" type="number">
+
+<button onclick="calc()">AI számol</button>
+
+<div class="stat">
+
+Napi cél: <span id="goal">0</span> dl
+
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="bucket">
+
+<div id="water" class="water">
+
+<div class="wave"></div>
+
+</div>
+
+</div>
+
+<div class="stat">
+
+Megivott: <span id="amount">0</span> dl
+
+</div>
+
+<input id="drink" type="number" placeholder="dl">
+
+<button onclick="drink()">Ittam</button>
+
+</div>
+
+</div>
+
+<script>
+
+let goal=0
+let amount=0
+let lastDrink=Date.now()
+
+function calc(){
+
+let w=document.getElementById("weight").value
+
+goal=Math.round(w*0.04*10)
+
+localStorage.setItem("goal",goal)
+
+update()
+
+}
+
+function drink(){
+
+let dl=parseInt(document.getElementById("drink").value)
+
+if(!dl)return
+
+amount+=dl
+
+lastDrink=Date.now()
+
+save()
+
+update()
+
+}
+
+function update(){
+
+document.getElementById("goal").innerText=goal
+document.getElementById("amount").innerText=amount
+
+let percent=(amount/goal)*100
+
+if(percent>100)percent=100
+
+document.getElementById("water").style.height=percent+"%"
+
+}
+
+function save(){
+
+localStorage.setItem("amount",amount)
+localStorage.setItem("lastDrink",lastDrink)
+localStorage.setItem("date",new Date().toDateString())
+
+}
+
+function load(){
+
+let savedDate=localStorage.getItem("date")
+
+if(savedDate!=new Date().toDateString()){
+amount=0
+}else{
+amount=parseInt(localStorage.getItem("amount"))||0
+lastDrink=parseInt(localStorage.getItem("lastDrink"))||Date.now()
+}
+
+goal=parseInt(localStorage.getItem("goal"))||0
+
+update()
+
+}
+
+function notify(msg){
+
+if(Notification.permission==="granted"){
+new Notification(msg)
+}
+
+}
+
+function enable(){
+
+Notification.requestPermission().then(p=>{
+
+if(p==="granted"){
+
+document.getElementById("permission").style.display="none"
+
+}
+
+})
+
+}
+
+function check(){
+
+let minutes=(Date.now()-lastDrink)/60000
+
+if(minutes>120){
+
+notify("🚨 2 órája nem ittál!")
+
+}
+
+else if(minutes>60){
+
+notify("⚠️ 1 órája nem ittál!")
+
+}
+
+else if(minutes>45){
+
+notify("💧 Igyál vizet!")
+
+}
+
+}
+
+
+
+setInterval(check,60000)
+
+load()
+
+</script>
+
+</body>
+</html>
