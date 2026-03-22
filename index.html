@@ -10,7 +10,7 @@
   body {
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
-background-image: url('https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUyNGs5cm8ycGV4aTljNm9hNGY2a2EzMHVtcmNveTVidjN1MXJybWo2eiZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/9Xw21tq79NuPeRJ3OE/giphy.gif');
+background-image: url('https://github.com/cacacrosoft/cacacrosoft.github.io/blob/main/web%2014.png?raw=true');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -120,6 +120,12 @@ background-image: url('https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUyNGs5cm8
   body {
     background-attachment: scroll; /* mobilon ne laggoljon */
   }
+
+  @media (max-width: 768px) {
+  .topnav {
+    display: none; /* régi menü eltűnik */
+  }
+}
 
   /* Felső menü */
   .topnav {
@@ -248,6 +254,51 @@ background-image: url('https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUyNGs5cm8
   border-radius: 6px;
 }
 
+/* ☰ gomb */
+.menu-toggle {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  font-size: 26px;
+  background: #04AA6D;
+  padding: 10px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  z-index: 9999;
+}
+
+/* 📱 Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -260px; /* alapból elrejtve */
+  width: 260px;
+  height: 100%;
+  background: rgba(0,0,0,0.95);
+  backdrop-filter: blur(10px);
+  padding-top: 60px;
+  transition: 0.3s ease;
+  z-index: 9998;
+}
+
+/* aktív állapot */
+.sidebar.active {
+  right: 0;
+}
+
+/* menü elemek */
+.sidebar a {
+  display: block;
+  padding: 15px 20px;
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.sidebar a:hover {
+  background: #04AA6D;
+}
+
 </style>
 </head>
 <body>
@@ -258,34 +309,50 @@ background-image: url('https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUyNGs5cm8
   </video>
 </div>
 
-<div class="topnav">
-  <a onclick="showContent('learazasok')" id="learazasokLink" class="active">Főoldal</a>
-  <a onclick="showContent('hirek')" id="hirekLink">Hírek</a>
-  <a onclick="showContent('vibercsoportok')" id="vibercsoportokLink">Viber</a>
-  <a onclick="showContent('cardok')" id="cardokLink">Cardok</a>
-  <a onclick="showContent('jatek'); initSnake();" id="jatekLink">Snake</a>
-   <a onclick="showContent('fa')" id="faLink">Fa</a>
 
-  <div class="dropdown-container">
-    <a onclick="toggle5rMenu()" id="otrLink">5.R ▾</a>
-    <div id="menu5r" class="menu5r">
-      <button onclick="openTestProtected()">▶️ 5.R Tube</button>
-      <button onclick="openMoziProtected()">🎬 cacflix</button>
-      <button onclick="openStudiModal(1)">👨‍🏫 Teacher 5.R</button>
+
+<!-- ☰ Menü gomb -->
+<div class="menu-toggle" onclick="toggleSidebar()">☰</div>
+
+<!-- 📱 Jobb oldali menü -->
+
+<div id="sidebar" class="sidebar">
+  <a onclick="showContent('learazasok')">Főoldal</a>
+  <a onclick="showContent('hirek')">Hírek</a>
+  <a onclick="showContent('vibercsoportok')">Viber</a>
+  <a onclick="showContent('cardok')">Cardok</a>
+  <a onclick="showContent('jatek')">Snake</a>
+  <a onclick="showContent('fa')">Fa</a>
+  <a onclick="openMoziProtected()">🎬 cacflix</a>
+   <a onclick="openStudiModal5a()">💬 5.r chat </a>
+     <a onclick="openStudentModal()">🎓 Study</a>
+   <a onclick="openStudiModal(1)">👨‍🏫 Teacher 5.R</a>
+   <a onclick="openTestProtected()">▶️ 5.R Tube</a>
+   <hr>
+<div id="weatherTime" style="padding: 10px; color:white; font-size:16px; text-align:center;">
+  ⏰ <span id="currentTime">--:--:--</span><br>
+  🌤 <span id="currentWeather">Betöltés…</span>
+</div>
+  <hr>
+
+  <a onclick="toggle5rMenu()">5.R ▾</a>
+  <div id="menu5r" class="menu5r">
+    <button onclick="openTestProtected()">▶️ 5.R Tube</button>
+    <button onclick="openMoziProtected()">🎬 cacflix</button>
+    <button onclick="openStudiModal(1)">👨‍🏫 Teacher 5.R</button>
       <button onclick="openStudentModal()">🎓 Study</button>
       <button onclick="openStudiModal5a()">💬 5.r chat</button>
+  </div>
+
+  <a onclick="toggle5aMenu()">privi ▾</a>
+  <div id="menu5a" class="menu5r">
+    <button onclick="openTestProtected5a()">cacflix</button>
+     <button onclick="openStudentModal5a()">Tanároknak1</button>
     </div>
   </div>
 
-  <div class="dropdown-container">
-    <a onclick="toggle5aMenu()" id="otaLink">privi ▾</a>
-    <div id="menu5a" class="menu5r">
-      <button onclick="openTestProtected5a()">cacflix</button>
-
-      <button onclick="openStudentModal5a()">Tanároknak1</button>
-    </div>
-  </div>
 </div>
+
 
 <div id="learazasok" class="content active">
   <h2>Üdvözli a Cacacrosoft!</h2>
@@ -319,7 +386,7 @@ background-image: url('https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUyNGs5cm8
 
 
 <div id="cardok" class="content">
-  <h2>Caca Card kedvezmény!</h2>
+  <h2>Caca Card</h2>
   <img src="caca club card.jpg" width="250">
 </div>
 
@@ -334,7 +401,7 @@ background-image: url('https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUyNGs5cm8
   <button onclick="openClearMoziModal()" style="padding:10px; background:#f44336; color:white; border:none; border-radius:5px; cursor:pointer;">🗑 Mozi kiürítése</button>
   <h2>Válassz helyet</h2>
   <div id="seatMap" class="seat-map" style="display:none;"></div>
-<button onclick="showSeats()" 
+<button onclick="showSeats()"
   style="padding:10px; background:#04AA6D; color:white; border:none; border-radius:8px;">
   🎟 Foglalás megnyitása
 <h2>Üdvözöl a cacaflix</h2>
@@ -371,7 +438,7 @@ background-image: url('https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUyNGs5cm8
 </div>
 
 <div id="studiContent5a" class="content">
-  <h1> ⚠️Danger⚠️ <br> Ártatlan cacásra támadtak a  <br> bár a támadot semmi konfliktust nem csinált <br> még is meg támadták. <br> És nem ez volt az első! </h1> 
+  <h1> ⚠️Danger⚠️ <br> Ártatlan cacásra támadtak a dunások <br> bár a támadot semmi konfliktust nem csinált <br> még is meg támadták. <br> És nem ez volt az első! </h1>
   <video autoplay loop muted controls width="640" height="360">
   <source src="i.mp4" type="video/mp4">
 </video>
@@ -1931,6 +1998,71 @@ function showSeats() {
     movie.style.display = title.includes(input) ? "block" : "none";
   });
 }
+
+function toggleSidebar() {
+  document.getElementById("sidebar").classList.toggle("active");
+}
+
+
+document.addEventListener("DOMContentLoaded", function() {
+
+  // 5.R menü fix
+  const btn5r = document.querySelector('[onclick="toggle5rMenu()"]');
+  const menu5r = document.getElementById("menu5r");
+
+  if (btn5r && menu5r) {
+    btn5r.onclick = function(e) {
+      e.stopPropagation();
+      menu5r.style.display =
+        (menu5r.style.display === "block") ? "none" : "block";
+    };
+  }
+
+  // privi menü fix
+  const btn5a = document.querySelector('[onclick="toggle5aMenu()"]');
+  const menu5a = document.getElementById("menu5a");
+
+  if (btn5a && menu5a) {
+    btn5a.onclick = function(e) {
+      e.stopPropagation();
+      menu5a.style.display =
+        (menu5a.style.display === "block") ? "none" : "block";
+    };
+  }
+
+});
+
+
+// 🔹 Idő frissítése
+function updateTime() {
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('hu-HU', {hour12:false});
+  document.getElementById('currentTime').textContent = timeStr;
+}
+setInterval(updateTime, 1000); // minden másodpercben frissít
+updateTime();
+
+// 🔹 Időjárás lekérése (OpenWeatherMap példával)
+const weatherApiKey = "185fd34fe4e7349dbd5452eb0da1f376";
+const city = "Budapest,HU"; // város
+
+async function updateWeather() {
+  try {
+    const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&lang=hu&appid=${weatherApiKey}`);
+    if(!res.ok) throw new Error("Hálózati hiba");
+    const data = await res.json();
+    const temp = data.main.temp.toFixed(1);
+    const desc = data.weather[0].description;
+    document.getElementById('currentWeather').textContent = `${desc}, ${temp}°C`;
+  } catch(e) {
+    console.error(e);
+    document.getElementById('currentWeather').textContent = "Nem elérhető";
+  }
+}
+
+updateWeather();
+setInterval(updateWeather, 10 * 60 * 1000); // 10 percenként frissít
+
 
 </script>
 </body>
