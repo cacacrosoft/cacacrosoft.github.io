@@ -349,13 +349,7 @@ background-image: url('https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUyNGs5cm8
 </div>
 
 <div id="jatek" class="content">
-  <h2>Score: <span id="scoreVal">0</span></h2>
-  <div style="position: relative; width: 400px; margin: 0 auto;">
-    <canvas id="snake-canvas" width="400" height="400"></canvas>
-    <div id="playOverlay" style="position: absolute; inset:0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center;">
-      <button onclick="startGameNow()" style="padding: 20px; background: #04AA6D; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">PLAY!</button>
-    </div>
-  </div>
+<iframe src="https://cacacrosoft.github.io/retrosnake/" width="640" height="360" ></iframe>
 </div>
 
 <div id="studiContent1" class="content">
@@ -447,7 +441,7 @@ document.getElementById('addYoutubeBtn').addEventListener('click', () => {
 </div>
 
 <div id="testModal" class="modal"><div class="modal-content"><h2>Tube kód (5.R)</h2><input type="password" id="testCode" onkeydown="if(event.key==='Enter') checkTestCode()"><br><button onclick="checkTestCode()">Belépés</button><button onclick="closeTest()">Mégse</button><p id="testError" style="color:red;"></p></div></div>
-<div id="testModal5a" class="modal"><div class="modal-content"><h2>Tube kód (5.A)</h2><input type="password" id="testCode5a" onkeydown="if(event.key==='Enter') checkTestCode5a()"><br><button onclick="checkTestCode5a()">Belépés</button><button onclick="closeTest5a()">Mégse</button><p id="testError5a" style="color:red;"></p></div></div>
+<div id="testModal5a" class="modal"><div class="modal-content"><h2>...</h2><input type="password" id="testCode5a" onkeydown="if(event.key==='Enter') checkTestCode5a()"><br><button onclick="checkTestCode5a()">Belépés</button><button onclick="closeTest5a()">Mégse</button><p id="testError5a" style="color:red;"></p></div></div>
 <div id="moziModal" class="modal"><div class="modal-content"><h2>Mozi kód</h2><input type="password" id="moziCode" onkeydown="if(event.key==='Enter') checkMoziCode()"><br><button onclick="checkMoziCode()">Belépés</button><button onclick="closeMozi()">Mégse</button><p id="moziError" style="color:red;"></p></div></div>
 <div id="clearMoziModal" class="modal"><div class="modal-content"><h2>Admin</h2><input type="password" id="clearMoziCode" onkeydown="if(event.key==='Enter') checkClearMoziCode()"><br><button onclick="checkClearMoziCode()">Törlés</button><button onclick="closeClearMozi()">Mégse</button></div></div>
 <div id="studiModal1" class="modal"><div class="modal-content"><h2>Tanári kód (5.R)</h2><input type="password" id="studiCode1" onkeydown="if(event.key==='Enter') checkStudiCode(1)"><br><button onclick="checkStudiCode(1)">Belépés</button><button onclick="closeStudi(1)">Mégse</button><p id="studiError1" style="color:red;"></p></div></div>
