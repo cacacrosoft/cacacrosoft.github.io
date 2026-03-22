@@ -270,7 +270,7 @@ background-image: url('https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUyNGs5cm8
     <a onclick="toggle5rMenu()" id="otrLink">5.R ▾</a>
     <div id="menu5r" class="menu5r">
       <button onclick="openTestProtected()">▶️ 5.R Tube</button>
-      <button onclick="openMoziProtected()">🎬 Mozi</button>
+      <button onclick="openMoziProtected()">🎬 cacflix</button>
       <button onclick="openStudiModal(1)">👨‍🏫 Teacher 5.R</button>
       <button onclick="openStudentModal()">🎓 Study</button>
       <button onclick="openStudiModal5a()">💬 5.r chat</button>
@@ -280,7 +280,7 @@ background-image: url('https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUyNGs5cm8
   <div class="dropdown-container">
     <a onclick="toggle5aMenu()" id="otaLink">privi ▾</a>
     <div id="menu5a" class="menu5r">
-      <button onclick="openTestProtected5a()">caca ablak</button>
+      <button onclick="openTestProtected5a()">cacflix</button>
 
       <button onclick="openStudentModal5a()">Tanároknak1</button>
     </div>
@@ -333,7 +333,11 @@ background-image: url('https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUyNGs5cm8
 <div id="mozi" class="content">
   <button onclick="openClearMoziModal()" style="padding:10px; background:#f44336; color:white; border:none; border-radius:5px; cursor:pointer;">🗑 Mozi kiürítése</button>
   <h2>Válassz helyet</h2>
-  <div id="seatMap" class="seat-map"></div>
+  <div id="seatMap" class="seat-map" style="display:none;"></div>
+<button onclick="showSeats()" 
+  style="padding:10px; background:#04AA6D; color:white; border:none; border-radius:8px;">
+  🎟 Foglalás megnyitása
+</button>
 </div>
 
 <div id="jatek" class="content">
@@ -431,8 +435,7 @@ document.getElementById('addYoutubeBtn').addEventListener('click', () => {
 </div>
 
 <div id="studentContent5a" class="content">
-<iframe style="max-width:100%" src="https://wordwall.net/embed/fe7502ac235b4a8ea99c38d97bd53b38?themeId=1&templateId=8&fontStackId=0" width="500" height="380" frameborder="0" allowfullscreen></iframe>
-  <ul id="studentHomeworksList5a"></ul>
+
 </div>
 
 <div id="testModal" class="modal"><div class="modal-content"><h2>Tube kód (5.R)</h2><input type="password" id="testCode" onkeydown="if(event.key==='Enter') checkTestCode()"><br><button onclick="checkTestCode()">Belépés</button><button onclick="closeTest()">Mégse</button><p id="testError" style="color:red;"></p></div></div>
@@ -1828,6 +1831,7 @@ document.querySelectorAll(".menu5r button, .topnav a").forEach(el => {
 🛀🏼
 🛌🏼
 
+
 `.trim().split(/\s+/);
 
 const picker = document.getElementById("emojiPicker");
@@ -1905,7 +1909,16 @@ const observerYT = new MutationObserver(mutations => {
 observerYT.observe(document.body, { childList: true, subtree: true });
 
 
+function showSeats() {
+  const map = document.getElementById("seatMap");
 
+  if(map.style.display === "none") {
+    map.style.display = "grid";
+    loadSeats(); // betölti a székeket
+  } else {
+    map.style.display = "none";
+  }
+}
 
 
 </script>
