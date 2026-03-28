@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Generátor PRO</title>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+<style>
+body {
+    margin: 0;
+    font-family: -apple-system, sans-serif;
+    background: linear-gradient(135deg,#0f172a,#020617);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.box {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px);
+    padding: 25px;
+    border-radius: 25px;
+    width: 90%;
+    max-width: 350px;
+    text-align: center;
+}
+
+input {
+    width: 90%;
+    padding: 12px;
+    border-radius: 15px;
+    border: none;
+    margin-bottom: 10px;
+}
+
+button {
+    width: 95%;
+    padding: 12px;
+    border-radius: 15px;
+    border: none;
+    margin-top: 8px;
+    font-size: 16px;
+}
+
+.gen { background:#22c55e; }
+.down { background:#3b82f6; }
+
+#qrcode { margin-top:15px; }
+</style>
+</head>
+<body>
+
+<div class="box">
+    <h2>QR Generátor PRO</h2>
+    <input id="name" placeholder="Neved">
+    <button class="gen" onclick="gen()">Generálás</button>
+    <div id="qrcode"></div>
+    <button id="down" class="down" onclick="download()" style="display:none;">Letöltés</button>
+</div>
+
+<script>
+let canvasRef = null;
+
+function generateSignature(name) {
+    return btoa(name + "_secure_2026").substring(0,10);
+}
+
+function gen() {
+    const name = document.getElementById("name").value;
+    if(!name) return alert("Írj nevet!");
+
+    const sig = generateSignature(name);
+
+    const url = window.location.origin + window.location.pathname.replace("index.html","") +
+        "scanner.html?name=" + encodeURIComponent(name) + "&sig=" + sig;
+
+    const canvas = document.createElement("canvas");
+
+    QRCode.toCanvas(canvas, url, {width:220}, function () {
+        document.getElementById("qrcode").innerHTML = "";
+        document.getElementById("qrcode").appendChild(canvas);
+        canvasRef = canvas;
+        document.getElementById("down").style.display = "block";
+    });
+}
+
+function download() {
+    const a = document.createElement("a");
+    a.href = canvasRef.toDataURL();
+    a.download = "qr.png";
+    a.click();
+}
+</script>
+
+</body>
+</html>
