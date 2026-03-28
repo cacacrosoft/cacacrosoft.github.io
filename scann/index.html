@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Scanner PRO</title>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+body {
+    margin:0;
+    font-family:-apple-system,sans-serif;
+    background:#020617;
+    color:white;
+    text-align:center;
+}
+
+h1 { font-size:22px; margin-top:15px; }
+
+#reader {
+    width:100%;
+    max-width:350px;
+    margin:auto;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.result {
+    margin-top:20px;
+    animation:fade 0.3s ease;
+}
+
+.result h2 { color:#22c55e; }
+
+@keyframes fade {
+    from{opacity:0; transform:translateY(10px);}
+    to{opacity:1; transform:translateY(0);}
+}
+</style>
+</head>
+<body>
+
+<h1>📱 QR Beolvasó</h1>
+<div id="reader"></div>
+<div id="result"></div>
+
+<audio id="beep">
+<source src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg">
+</audio>
+
+<script>
+function validateSignature(name, sig) {
+    const expected = btoa(name + "_secure_2026").substring(0,10);
+    return sig === expected;
+}
+
+function success(name) {
+    document.getElementById("result").innerHTML = `
+        <div class="result">
+            <h1>${name}</h1>
+            <h2>✔️ Beolvasva</h2>
+        </div>
+    `;
+
+    // hang
+    document.getElementById("beep").play();
+
+    // rezgés (mobil)
+    if (navigator.vibrate) {
+        navigator.vibrate(200);
+    }
+}
+
+function onScan(decodedText) {
+    try {
+        const url = new URL(decodedText);
+        const name = url.searchParams.get("name");
+        const sig = url.searchParams.get("sig");
+
+        if (!name || !sig || !validateSignature(name, sig)) {
+            document.getElementById("result").innerHTML = "❌ Érvénytelen QR";
+            return;
+        }
+
+        success(name);
+        scanner.clear();
+
+    } catch {
+        document.getElementById("result").innerHTML = "❌ Hibás QR";
+    }
+}
+
+const scanner = new Html5QrcodeScanner("reader", {
+    fps: 10,
+    qrbox: { width: 250, height: 250 }
+});
+
+scanner.render(onScan);
+</script>
+
+</body>
+</html>
