@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ULTRA QR Scanner</title>
+<title>QR Scanner PRO</title>
 
 <script src="https://unpkg.com/html5-qrcode"></script>
 
@@ -11,203 +11,91 @@
 body {
     margin:0;
     font-family:-apple-system,sans-serif;
-    background:black;
-    color:#00f0ff;
-    overflow:hidden;
-}
-
-/* HUD GRID */
-body::before {
-    content:"";
-    position:fixed;
-    width:100%;
-    height:100%;
-    background:
-        linear-gradient(rgba(0,255,255,0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,255,0.05) 1px, transparent 1px);
-    background-size:40px 40px;
-    pointer-events:none;
-}
-
-/* HEADER */
-h1 {
+    background:#020617;
+    color:white;
     text-align:center;
-    font-size:18px;
-    margin-top:10px;
-    color:#00f0ff;
-    text-shadow:0 0 10px #00f0ff;
 }
 
-/* CAMERA */
+h1 { font-size:22px; margin-top:15px; }
+
 #reader {
     width:100%;
-    max-width:360px;
+    max-width:350px;
     margin:auto;
     border-radius:20px;
     overflow:hidden;
 }
 
-/* TARGET */
-.target {
-    position:absolute;
-    top:50%;
-    left:50%;
-    width:230px;
-    height:230px;
-    transform:translate(-50%,-50%);
-}
-
-/* FACE CIRCLE */
-.circle {
-    position:absolute;
-    width:100%;
-    height:100%;
-    border:2px solid #00f0ff;
-    border-radius:50%;
-    box-shadow:0 0 20px #00f0ff;
-    animation:pulse 2s infinite;
-}
-
-/* LOCK RING */
-.lock-ring {
-    position:absolute;
-    width:100%;
-    height:100%;
-    border:4px solid #00f0ff;
-    border-radius:50%;
-    clip-path:circle(0% at center);
-    transition:clip-path 0.6s ease;
-}
-
-/* SCAN LINE */
-.scan-line {
-    position:absolute;
-    width:100%;
-    height:2px;
-    background:#00f0ff;
-    top:0;
-    box-shadow:0 0 10px #00f0ff;
-    animation:scan 2s infinite;
-}
-
-/* CORNERS */
-.corner {
-    position:absolute;
-    width:30px;
-    height:30px;
-    border:3px solid #00f0ff;
-}
-
-.tl { top:0; left:0; border-right:none; border-bottom:none;}
-.tr { top:0; right:0; border-left:none; border-bottom:none;}
-.bl { bottom:0; left:0; border-right:none; border-top:none;}
-.br { bottom:0; right:0; border-left:none; border-top:none;}
-
-/* RESULT HUD */
 .result {
-    position:absolute;
-    bottom:40px;
-    left:50%;
-    transform:translateX(-50%);
-    background:rgba(0,0,0,0.6);
-    padding:15px 25px;
-    border-radius:20px;
-    border:1px solid #00f0ff;
-    box-shadow:0 0 20px #00f0ff;
-    animation:fade 0.4s ease;
+    margin-top:20px;
+    animation:fade 0.3s ease;
 }
 
-/* ANIM */
-@keyframes scan {
-    0% { top:0; }
-    100% { top:100%; }
-}
-
-@keyframes pulse {
-    0% { opacity:0.6; }
-    50% { opacity:1; }
-    100% { opacity:0.6; }
-}
+.result h2 { color:#22c55e; }
 
 @keyframes fade {
-    from {opacity:0;}
-    to {opacity:1;}
+    from{opacity:0; transform:translateY(10px);}
+    to{opacity:1; transform:translateY(0);}
 }
 </style>
 </head>
 <body>
 
-<h1>🕶️ SCAN SYSTEM ACTIVE</h1>
-
+<h1>📱 QR Beolvasó</h1>
 <div id="reader"></div>
-
-<div class="target" id="target">
-    <div class="circle"></div>
-    <div class="lock-ring" id="lock"></div>
-
-    <div class="corner tl"></div>
-    <div class="corner tr"></div>
-    <div class="corner bl"></div>
-    <div class="corner br"></div>
-
-    <div class="scan-line"></div>
-</div>
-
 <div id="result"></div>
 
 <audio id="beep">
-<source src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg">
+<source src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg">
 </audio>
 
 <script>
 function validateSignature(name, sig) {
-    return btoa(name + "_secure_2026").substring(0,10) === sig;
-}
-
-function unlockAnimation() {
-    const lock = document.getElementById("lock");
-    lock.style.clipPath = "circle(75% at center)";
+    const expected = btoa(name + "_secure_2026").substring(0,10);
+    return sig === expected;
 }
 
 function success(name) {
-    unlockAnimation();
+    document.getElementById("result").innerHTML = `
+        <div class="result">
+            <h1>${name}</h1>
+            <h2>✔️ Beolvasva</h2>
+            <iframe src="https://cacacrosoft.github.io/animacio_1" width="360" height="640" >
 
-    setTimeout(()=>{
-        document.getElementById("result").innerHTML = `
-            <div class="result">
-                <h2>${name}</h2>
-                <p>✔️ Hitelesítve</p>
- <iframe src="https://cacacrosoft.github.io/animacio_1" width="360" height="640" >
-            </div>
-        `;
-    }, 400);
+        </div>
+    `;
 
+    // hang
     document.getElementById("beep").play();
 
-    if(navigator.vibrate){
-        navigator.vibrate([100,50,100]);
+    // rezgés (mobil)
+    if (navigator.vibrate) {
+        navigator.vibrate(200);
     }
 }
 
-function onScan(text) {
+function onScan(decodedText) {
     try {
-        const url = new URL(text);
+        const url = new URL(decodedText);
         const name = url.searchParams.get("name");
         const sig = url.searchParams.get("sig");
 
-        if(!name || !sig || !validateSignature(name,sig)){
+        if (!name || !sig || !validateSignature(name, sig)) {
+            document.getElementById("result").innerHTML = "❌ Érvénytelen QR";
             return;
         }
 
         success(name);
         scanner.clear();
 
-    } catch {}
+    } catch {
+        document.getElementById("result").innerHTML = "❌ Hibás QR";
+    }
 }
 
 const scanner = new Html5QrcodeScanner("reader", {
-    fps:10,
-    qrbox:{width:230,height:230}
+    fps: 10,
+    qrbox: { width: 250, height: 250 }
 });
 
 scanner.render(onScan);
