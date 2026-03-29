@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buddhista Mód</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #111;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    color: white;
+    flex-direction: column;
+  }
+
+  #buddha {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, #ffd700, #ffa500);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    transform: scale(0);
+    transition: transform 1s ease;
+  }
+
+  #buddha.active {
+    transform: scale(1);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  #timerInput {
+    margin-top: 20px;
+    font-size: 1rem;
+    padding: 5px;
+    width: 80px;
+    text-align: center;
+  }
+
+  #startBtn {
+    margin-top: 10px;
+    font-size: 1rem;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+
+</style>
+</head>
+<body>
+
+<div id="buddha">🧘‍♂️</div>
+<input type="number" id="timerInput" placeholder="Perc" min="1" max="120">
+<button id="startBtn">Indítás</button>
+<audio id="meditationAudio" loop>
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+<script>
+  const buddha = document.getElementById('buddha');
+  const audio = document.getElementById('meditationAudio');
+  const timerInput = document.getElementById('timerInput');
+  const startBtn = document.getElementById('startBtn');
+  let meditationTimeout;
+
+  // AI hang üzenet
+  function speak(text) {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      window.speechSynthesis.speak(utterance);
+    } else {
+      alert(text);
+    }
+  }
+
+  function startMeditation(durationMinutes) {
+    buddha.classList.add('active');
+    audio.currentTime = 0;
+    audio.play();
+    meditationTimeout = setTimeout(() => {
+      stopMeditation();
+      alert("Meditáció véget ért.");
+    }, durationMinutes * 60 * 1000);
+  }
+
+  function stopMeditation() {
+    buddha.classList.remove('active');
+    audio.pause();
+    audio.currentTime = 0;
+    clearTimeout(meditationTimeout);
+  }
+
+  startBtn.addEventListener('click', () => {
+    const minutes = parseInt(timerInput.value);
+    if (!isNaN(minutes) && minutes > 0) {
+      startMeditation(minutes);
+    } else {
+      alert("Kérlek adj meg egy érvényes időt percben.");
+    }
+  });
+
+  // Battery API ellenőrzés
+  if ('getBattery' in navigator) {
+    navigator.getBattery().then(battery => {
+
+      function chargingChange() {
+        if (battery.charging) {
+          // AI üzenet a töltés indulásakor
+          speak("Meditáció indítása. Kérlek válaszd ki, meddig szeretnéd.");
+          buddha.classList.add('active');
+        } else {
+          stopMeditation();
+        }
+      }
+
+      chargingChange();
+      battery.addEventListener('chargingchange', chargingChange);
+    });
+  } else {
+    console.warn("Ez a böngésző nem támogatja a Battery API-t.");
+  }
+</script>
+
+</body>
+</html>
