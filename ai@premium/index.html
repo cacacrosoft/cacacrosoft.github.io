@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultra AI Hang Chat</title>
+
+<style>
+body {
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+    background: linear-gradient(135deg,#0f0f0f,#1c1c1c);
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.chat {
+    width:380px;
+    height:650px;
+    background:#121212;
+    border-radius:25px;
+    display:flex;
+    flex-direction:column;
+    box-shadow:0 0 40px #00ffcc33;
+    overflow:hidden;
+}
+
+.header {
+    padding:15px;
+    font-weight:bold;
+    background:#181818;
+    text-align:center;
+    border-bottom:1px solid #333;
+}
+
+.messages {
+    flex:1;
+    padding:10px;
+    overflow-y:auto;
+}
+
+.msg {
+    margin:8px 0;
+    padding:10px;
+    border-radius:15px;
+    max-width:80%;
+    animation:fade 0.3s ease;
+}
+
+.user { background:#007aff; margin-left:auto; }
+.bot { background:#2a2a2a; }
+
+.inputBox {
+    display:flex;
+    padding:10px;
+    border-top:1px solid #333;
+}
+
+input {
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:15px;
+    background:#1e1e1e;
+    color:white;
+}
+
+button {
+    margin-left:5px;
+    padding:12px;
+    border:none;
+    border-radius:15px;
+    background:#00ffcc;
+    cursor:pointer;
+}
+
+@keyframes fade {
+    from {opacity:0; transform:translateY(10px);}
+    to {opacity:1; transform:translateY(0);}
+}
+</style>
+</head>
+
+<body>
+
+<div class="chat">
+    <div class="header">🎤 Ultra AI Hang Chat</div>
+    <div class="messages" id="messages"></div>
+
+    <div class="inputBox">
+        <input id="input" placeholder="Írj vagy nyomj a mikrofonra">
+        <button onclick="send()">➤</button>
+        <button onclick="startListening()">🎙️</button>
+    </div>
+</div>
+
+<script>
+// Üzenetek megjelenítése
+function addMessage(text,type){
+    const msg = document.createElement("div");
+    msg.className = "msg " + type;
+    msg.innerText = text;
+    document.getElementById("messages").appendChild(msg);
+    msg.scrollIntoView();
+}
+
+// Összefoglalás AI-szerűen
+function summarize(text){
+    if(!text) return "Nem találtam választ 😕";
+    let sentences = text.split(". ");
+    let result = sentences.slice(0,3).join(". ") + ".";
+    result = result.replace(/Wikipedia|wikidata/gi,"Wikipédia");
+    return result;
+}
+
+// Több forrás lekérése
+async function fetchSources(query){
+    let results = [];
+
+    // Wikipédia
+    try{
+        const wikiUrl = "https://api.allorigins.win/raw?url=" +
+            encodeURIComponent("https://hu.wikipedia.org/api/rest_v1/page/summary/" + query);
+        const wikiRes = await fetch(wikiUrl);
+        const wikiData = await wikiRes.json();
+        if(wikiData.extract) results.push(wikiData.extract);
+    }catch{}
+
+    // DuckDuckGo fallback
+    try{
+        const ddUrl = "https://api.allorigins.win/raw?url=" +
+            encodeURIComponent("https://api.duckduckgo.com/?q=" + query + "&format=json");
+        const ddRes = await fetch(ddUrl);
+        const ddData = await ddRes.json();
+        if(ddData.Abstract) results.push(ddData.Abstract);
+        if(ddData.RelatedTopics && ddData.RelatedTopics.length>0){
+            results.push(ddData.RelatedTopics[0].Text);
+        }
+    }catch{}
+
+    return results;
+}
+
+// Hangos visszajátszás
+function speak(text){
+    const synth = window.speechSynthesis;
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'hu-HU';
+    synth.speak(utter);
+}
+
+// Küldés funkció
+async function send(){
+    const input = document.getElementById("input");
+    const text = input.value;
+    if(!text) return;
+
+    addMessage(text,"user");
+    input.value = "";
+
+    addMessage("Keresés + AI gondolkodás... 🔥","bot");
+
+    const sources = await fetchSources(text);
+    const answer = summarize(sources.join(" "));
+
+    document.querySelector(".messages").lastChild.remove();
+    addMessage(answer,"bot");
+    speak(answer);
+}
+
+// Hang alapú kérdés
+function startListening(){
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'hu-HU';
+    recognition.start();
+
+    recognition.onresult = function(event){
+        const text = event.results[0][0].transcript;
+        document.getElementById("input").value = text;
+        send();
+    }
+
+    recognition.onerror = function(event){
+        alert("Hiba a hangfelismerésnél: " + event.error);
+    }
+}
+</script>
+
+</body>
+</html>
