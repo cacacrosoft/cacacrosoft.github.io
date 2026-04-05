@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎉 Anya 🎉</title>
+
+<style>
+body {
+  margin: 0;
+  background: radial-gradient(circle at center, #0a0a0a, #000);
+  color: white;
+  font-family: Arial;
+  overflow: hidden;
+  text-align: center;
+}
+
+/* INPUT SCREEN */
+#login {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+input {
+  padding: 15px;
+  font-size: 20px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+}
+
+button {
+  padding: 15px 25px;
+  font-size: 18px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: none;
+  background: #ff0077;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px #ff0077;
+}
+
+/* ERROR SHAKE */
+.error {
+  animation: shake 0.3s;
+}
+
+@keyframes shake {
+  0% { transform: translate(-50%, -50%) translateX(0); }
+  25% { transform: translate(-50%, -50%) translateX(-10px); }
+  50% { transform: translate(-50%, -50%) translateX(10px); }
+  75% { transform: translate(-50%, -50%) translateX(-10px); }
+  100% { transform: translate(-50%, -50%) translateX(0); }
+}
+
+/* BIRTHDAY SCREEN */
+#birthday {
+  display: none;
+}
+
+/* HUGE TEXT */
+.bigText {
+  font-size: 80px;
+  font-weight: bold;
+  animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+  from { text-shadow: 0 0 20px #ff00ff; }
+  to { text-shadow: 0 0 60px #00ffff; }
+}
+
+/* CONFETTI */
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: red;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(100vh) rotate(720deg);
+  }
+}
+
+/* FLASH BACKGROUND */
+.flash {
+  animation: flashBg 0.5s infinite alternate;
+}
+
+@keyframes flashBg {
+  from { background: #000; }
+  to { background: #111; }
+}
+
+/* PULSE */
+.pulse {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="login">
+  <h2>Írd be a nevet 👇</h2>
+  <input id="nameInput" placeholder="Név...">
+  <br>
+  <button onclick="checkName()">OK</button>
+</div>
+
+<div id="birthday">
+  <h1 class="bigText pulse">🎉 BOLDOG SZÜLETÉSNAPOT 🎉</h1>
+  <h2 class="bigText">💖 ANYA 💖</h2>
+</div>
+
+<script>
+
+const correctName = "ANYA"; // <<< EZT ÁTÍRHATOD
+
+function checkName() {
+  const input = document.getElementById("nameInput").value.toUpperCase();
+  const login = document.getElementById("login");
+
+  if (input === correctName) {
+    startBirthday();
+  } else {
+    login.classList.add("error");
+    setTimeout(() => login.classList.remove("error"), 300);
+  }
+}
+
+function startBirthday() {
+  document.getElementById("login").style.display = "none";
+  document.getElementById("birthday").style.display = "block";
+  document.body.classList.add("flash");
+
+  createConfetti();
+}
+
+function createConfetti() {
+  for (let i = 0; i < 200; i++) {
+    const conf = document.createElement("div");
+    conf.classList.add("confetti");
+
+    conf.style.left = Math.random() * 100 + "vw";
+    conf.style.top = "-10px";
+    conf.style.background = randomColor();
+    conf.style.animationDuration = (Math.random() * 3 + 2) + "s";
+
+    document.body.appendChild(conf);
+  }
+}
+
+function randomColor() {
+  const colors = ["#ff0", "#0ff", "#f0f", "#0f0", "#f00", "#00f"];
+  return colors[Math.floor(Math.random() * colors.length)];
+}
+
+</script>
+
+</body>
+</html>
