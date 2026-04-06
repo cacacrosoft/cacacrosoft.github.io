@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ödög</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  width: 90%;
+  max-width: 600px;
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 10px;
+}
+
+#question {
+  font-size: 22px;
+  margin: 20px 0;
+}
+
+.answers button {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  background: #222;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.answers button:hover {
+  background: #00c3ff;
+  transform: scale(1.05);
+}
+
+.correct {
+  background: #00ff88 !important;
+}
+
+.wrong {
+  background: #ff4444 !important;
+}
+
+#nextBtn {
+  margin-top: 20px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  background: #007aff;
+  color: white;
+  cursor: pointer;
+  display: none;
+}
+
+#result {
+  display: none;
+}
+
+video {
+  width: 100%;
+  margin-top: 20px;
+  border-radius: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+ <h2>Programozta macici </h2>
+<h1>🔥 Quiz</h1>
+<div id="question">Kérdés</div>
+
+<div class="answers" id="answers"></div>
+
+<button id="nextBtn">Következő</button>
+
+<div id="result"></div>
+
+<video id="video" controls></video>
+
+</div>
+
+<script>
+
+const quiz = [
+  {
+    question: "Ödög hol lakik?",
+    answers: ["fenti wc", "padlás", "nappali", "alagsor"],
+    correct: 0
+  },
+  {
+    question: "Ki vágja?",
+    answers: ["Marci", "Tobi"],
+    correct: 1
+  },
+  {
+    question: "Ki programozik a ttvben?",
+    answers: ["Marci", "Tobi"],
+    correct: 0
+  },
+  {
+
+
+    question: "Mi volt az eredeti neve?",
+    answers: ["ödö", "ödög"],
+    correct: 1
+  },
+  {
+
+     question: "Én (marci) kidombta az ablakon?",
+    answers: ["nem", "igen"],
+    correct: 0
+  },
+  {
+
+    question: "Szereted ödögöt?",
+    answers: ["igen", "nem"],
+    correct: 0
+  }
+];
+
+let current = 0;
+let score = 0;
+
+const questionEl = document.getElementById("question");
+const answersEl = document.getElementById("answers");
+const nextBtn = document.getElementById("nextBtn");
+const resultEl = document.getElementById("result");
+const videoEl = document.getElementById("video");
+
+function loadQuestion() {
+  nextBtn.style.display = "none";
+  videoEl.style.display = "none";
+  answersEl.innerHTML = "";
+
+  let q = quiz[current];
+  questionEl.innerText = q.question;
+
+  q.answers.forEach((ans, index) => {
+    const btn = document.createElement("button");
+    btn.innerText = ans;
+
+    btn.onclick = () => selectAnswer(btn, index);
+
+    answersEl.appendChild(btn);
+  });
+}
+
+function selectAnswer(button, index) {
+  const correctIndex = quiz[current].correct;
+
+  const buttons = document.querySelectorAll(".answers button");
+
+  buttons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === correctIndex) btn.classList.add("correct");
+    if (i === index && i !== correctIndex) btn.classList.add("wrong");
+  });
+
+  if (index === correctIndex) {
+    score++;
+    videoEl.src = "http://airmusic.atw.hu/jo1.mp4"; // jó válasz videó
+  } else {
+    videoEl.src = "http://airmusic.atw.hu/rosz.mp4"; // rossz válasz videó
+  }
+
+  videoEl.style.display = "block";
+  videoEl.play();
+
+  nextBtn.style.display = "block";
+}
+
+nextBtn.onclick = () => {
+  current++;
+  if (current < quiz.length) {
+    loadQuestion();
+  } else {
+    showResult();
+  }
+};
+
+function showResult() {
+  questionEl.style.display = "none";
+  answersEl.style.display = "none";
+  nextBtn.style.display = "none";
+
+  resultEl.style.display = "block";
+  resultEl.innerHTML = `<h2>Eredmény: ${score} / ${quiz.length}</h2>`;
+}
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>
