@@ -2,9 +2,29 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.body.innerHTML = `
+      <div style="
+        position:fixed;
+        inset:0;
+        background:#111;
+        color:white;
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
+        align-items:center;
+        z-index:999999;
+      ">
+        <img src="https://github.com/cacacrosoft/cacacrosoft.github.io/blob/main/ChatGPT%20Image%202026.%20%C3%A1pr.%2012.%2017_39_13.png?raw=true" width="600">
+        <h1>Folyamatban lévő karbantartás. Kérjük térjen vissza párnap múlva!</h1>
+      </div>
+    `;
+  });
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cacacrosoft Kft.</title>
+<title>Film and digital company</title>
 
 <style>
   body {
@@ -303,6 +323,36 @@ background-image: url('https://github.com/cacacrosoft/cacacrosoft.github.io/blob
 </head>
 <body>
 
+
+
+<div id="maintenance-screen">
+    <img src="https://github.com/cacacrosoft/cacacrosoft.github.io/blob/main/ChatGPT%20Image%202026.%20%C3%A1pr.%2012.%2017_39_13.png?raw=true">
+
+    <h1>Felhívjuk figyelmüket hogy az oldal frissités alatt van!</h1>
+
+
+</div>
+
+<style>
+#maintenance-screen {
+    position: fixed;
+    inset: 0;
+    background: #111;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999;
+}
+
+body > *:not(#maintenance-screen) {
+    display: none !important;
+}
+</style>
+
+<!-- IDE JÖN A RÉGI WEBOLDAL -->
+
 <div id="loadingOverlay">
   <video autoplay muted loop style="width: 300px;">
     <source src="Loading.mp4" type="video/mp4">
@@ -360,7 +410,7 @@ background-image: url('https://github.com/cacacrosoft/cacacrosoft.github.io/blob
   <h3>Tagok: <br> Kálazi Martin <br> Rablóczky Lénárd <br> Stefkó Soma <br> Tettamanti Marcell </h3>
   <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScgI6KbbzTLaryO8Ptnb10WWnncO5rGMk4H-i1mLPmmV8vf2g/viewform?usp=dialog" width="320" height="180" frameborder="0" marginheight="0" marginwidth="0">Betöltés…</iframe>
 
-  
+
   <div class="video-wrapper"><video controls><source src="https://marcell.qzz.io/cacaudv.mp4" type="video/mp4"></video></div>
   <img src="k.png" width="250" style="margin-top:20px;">
 </div>
