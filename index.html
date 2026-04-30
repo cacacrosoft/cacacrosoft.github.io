@@ -19,11 +19,36 @@
         <img src="http://cacacrosoft.github.io/k.png" width="600">
         <h1>Ez az oldal nem támogatja a 14.1-et.</h1>
         <img src="https://github.com/cacacrosoft/cacacrosoft.github.io/blob/main/gear_loading.gif?raw=true" > 
-          <a href="https://osztaly.qzz.io/"
+          <a href="https://osztaly.qzz.io/" </a>
      target="_blank"
      style="display:inline-block; padding:15px 25px; background:#7360f2; color:white; text-decoration:none; border-radius:8px; margin-bottom:20px;">
      👉 Átmenés az megújult  oldalra!
-  </a>
+     <button onclick="betoltVideo()" class="video-btn2">Várakozató zene</button>
+
+<style>
+.video-btn2 {
+  background: #111;
+  color: #0f0;
+  border: 2px solid #0f0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.2s;
+}
+
+.video-btn2:hover {
+  box-shadow: 0 0 10px #0f0;
+  transform: scale(1.1);
+}
+</style>
+     <script>
+function betoltVideo() {
+  document.getElementById("videoPlayer").src = "https://marcell.qzz.io/rick.mp4";
+}
+</script>
+  
 
       </div>
     `;
