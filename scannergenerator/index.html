@@ -86,6 +86,10 @@ button {
 <script>
 let canvasRef = null;
 
+function generateSignature(name) {
+    return btoa(unescape(encodeURIComponent(name + "_secure_2026"))).substring(0,10);
+}
+
 function gen() {
     const name = document.getElementById("name").value.trim();
 
@@ -94,21 +98,22 @@ function gen() {
         return;
     }
 
+    const sig = generateSignature(name);
+
+    const url = "https://cacacrosoft.github.io/scann/?name="
+        + encodeURIComponent(name)
+        + "&sig=" + sig;
+
     const canvas = document.createElement("canvas");
 
-    // Egyszerű szöveges QR-kód
-    QRCode.toCanvas(canvas, name, {
-        width: 300,
+    QRCode.toCanvas(canvas, url, {
+        width: 220,
         margin: 4,
-        errorCorrectionLevel: "H",
-        color: {
-            dark: "#000000",
-            light: "#FFFFFF"
-        }
+        errorCorrectionLevel: "H"
     }, function(error) {
 
         if (error) {
-            alert("Hiba történt a QR-kód generálásakor!");
+            alert("QR-kód generálási hiba!");
             return;
         }
 
@@ -126,11 +131,10 @@ function download() {
 
     const a = document.createElement("a");
     a.href = canvasRef.toDataURL("image/png");
-    a.download = "qr.png";
+    a.download = "alairas-qr.png";
     a.click();
 }
 </script>
-
 </body>
 </html>
 
