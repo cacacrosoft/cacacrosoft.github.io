@@ -1,4 +1,107 @@
-<h1 id="signature"></h1>
+
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caca aláírás</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    background: radial-gradient(circle at top, #163b65, #07111f 65%);
+    color: white;
+}
+
+.card {
+    width: 90%;
+    max-width: 430px;
+    padding: 40px 30px;
+    text-align: center;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 24px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    animation: appear 0.7s ease;
+}
+
+.icon {
+    width: 75px;
+    height: 75px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 38px;
+    background: rgba(34,197,94,0.15);
+    color: #4ade80;
+}
+
+h1 {
+    font-size: 25px;
+    margin-bottom: 12px;
+}
+
+p {
+    color: #b8c8dc;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.name {
+    margin-top: 25px;
+    padding: 15px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.07);
+    font-size: 18px;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+}
+
+.footer {
+    margin-top: 30px;
+    font-size: 11px;
+    color: #71849d;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <div class="icon" id="icon">✓</div>
+
+    <h1 id="title">Aláírás ellenőrzése</h1>
+    <p id="description">Digitális aláírás ellenőrzése folyamatban...</p>
+
+    <div class="name" id="signature"></div>
+
+    <div class="footer">
+        CACA ALÁÍRÁS • 2026
+    </div>
+</div>
 
 <script>
 const params = new URLSearchParams(window.location.search);
@@ -7,12 +110,34 @@ const name = params.get("name");
 const sig = params.get("sig");
 
 function generateSignature(name) {
-    return btoa(unescape(encodeURIComponent(name + "_secure_2026"))).substring(0,10);
+    return btoa(
+        unescape(
+            encodeURIComponent(name + "_secure_2026")
+        )
+    ).substring(0, 10);
 }
 
 if (name && sig && generateSignature(name) === sig) {
-    document.getElementById("signature").textContent = "Aláírva: " + name;
+    document.getElementById("icon").textContent = "✓";
+    document.getElementById("title").textContent = "Sikeres aláírás!";
+    document.getElementById("description").textContent =
+        "A digitális aláírás érvényes.";
+    document.getElementById("signature").textContent =
+        "Aláírta: " + name;
 } else {
-    document.getElementById("signature").textContent = "Érvénytelen aláírás!";
+    document.getElementById("icon").textContent = "✕";
+    document.getElementById("icon").style.color = "#f87171";
+    document.getElementById("icon").style.background =
+        "rgba(248,113,113,0.15)";
+
+    document.getElementById("title").textContent =
+        "Érvénytelen aláírás!";
+    document.getElementById("description").textContent =
+        "Az aláírás nem ellenőrizhető, vagy az adatok hibásak.";
+    document.getElementById("signature").textContent =
+        "Ellenőrzés sikertelen";
 }
 </script>
+
+</body>
+</html>
