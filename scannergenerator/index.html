@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="hu">
 <head>
@@ -16,7 +17,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
 }
 
 .box {
@@ -35,6 +36,7 @@ input {
     border-radius: 15px;
     border: none;
     margin-bottom: 10px;
+    box-sizing: border-box;
 }
 
 button {
@@ -44,53 +46,86 @@ button {
     border: none;
     margin-top: 8px;
     font-size: 16px;
+    cursor: pointer;
 }
 
 .gen { background:#22c55e; }
-.down { background:#3b82f6; }
+.down { background:#3b82f6; color:white; }
 
-#qrcode { margin-top:15px; }
+#qrcode {
+    margin-top: 15px;
+}
+
+#qrcode canvas {
+    max-width: 100%;
+    height: auto;
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+}
 </style>
 </head>
+
 <body>
 
 <div class="box">
     <h2>QR Generátor PRO</h2>
+
     <input id="name" placeholder="Neved">
+
     <button class="gen" onclick="gen()">Generálás</button>
+
     <div id="qrcode"></div>
-    <button id="down" class="down" onclick="download()" style="display:none;">Letöltés</button>
+
+    <button id="down" class="down"
+    onclick="download()" style="display:none;">
+        Letöltés
+    </button>
 </div>
 
 <script>
 let canvasRef = null;
 
-function generateSignature(name) {
-    return btoa(name + "_secure_2026").substring(0,10);
-}
-
 function gen() {
-    const name = document.getElementById("name").value;
-    if(!name) return alert("Írj nevet!");
+    const name = document.getElementById("name").value.trim();
 
-    const sig = generateSignature(name);
-
-    const url = window.location.origin + window.location.pathname.replace("index.html","") +
-        "scanner.html?name=" + encodeURIComponent(name) + "&sig=" + sig;
+    if (!name) {
+        alert("Írj nevet!");
+        return;
+    }
 
     const canvas = document.createElement("canvas");
 
-    QRCode.toCanvas(canvas, url, {width:220}, function () {
+    // Egyszerű szöveges QR-kód
+    QRCode.toCanvas(canvas, name, {
+        width: 300,
+        margin: 4,
+        errorCorrectionLevel: "H",
+        color: {
+            dark: "#000000",
+            light: "#FFFFFF"
+        }
+    }, function(error) {
+
+        if (error) {
+            alert("Hiba történt a QR-kód generálásakor!");
+            return;
+        }
+
         document.getElementById("qrcode").innerHTML = "";
         document.getElementById("qrcode").appendChild(canvas);
+
         canvasRef = canvas;
+
         document.getElementById("down").style.display = "block";
     });
 }
 
 function download() {
+    if (!canvasRef) return;
+
     const a = document.createElement("a");
-    a.href = canvasRef.toDataURL();
+    a.href = canvasRef.toDataURL("image/png");
     a.download = "qr.png";
     a.click();
 }
@@ -98,3 +133,4 @@ function download() {
 
 </body>
 </html>
+```
